@@ -19,6 +19,7 @@ import com.jme3.scene.control.CameraControl.ControlDirection;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Sphere;
+import java.util.List;
 
 /**
  * Some notes on the game:
@@ -34,6 +35,7 @@ public class Main extends SimpleApplication {
     
     //Environment constants
     public static final float PLAYINGFIELD_SIDE = 600f;
+    public static final float GRAVITY = 180f;
     
     //Tank constants
     public static final float TANK_BODY_LENGTH = 8f;
@@ -49,16 +51,22 @@ public class Main extends SimpleApplication {
     public static final float TANK_ROTATE_SPEED = 40f; 
     public static final float TURRET_ROTATE_SPEED = 50f; 
     public static final float TURRET_ELEVATE_SPEED = 10f;
+    public static final float TURRET_MAX_ELEVATION = 20f; //In degrees.
+    
+    //bullet constants
+    public static final float BULLET_RADIUS = TANK_BARREL_RADIUS;
+    public static final float BULLET_SPEED = 800f;
     
     //available variables.
     private CameraNode camNode;
-    private Node arena = new Node();
-    private Node tank = new Node();
-    
+    private Node arena = new Node("Arena");
+    private Node tank = new Node("Tank");
+    private Node allBullets = new Node("All bullets");
     
     private boolean isMoving = false;
     private float speed = 0;
     private float turretAngle = 0;
+    
     
     
     
@@ -82,8 +90,10 @@ public class Main extends SimpleApplication {
         
         tankNode.attachChild(body);
         
-        Node turretBaseNode = new Node("Turret base node");
-        Node turretNode = new Node("Turret node");
+        Node turretRotationalNode = new Node("Turret rotation node");
+        Node turretElevationNode = new Node("Turret elevation node");
+        Node turretAperture = new Node("Turret aperture");
+        
         Sphere turretSphere = new Sphere(ROUND_THINGS_RES, 
                 ROUND_THINGS_RES, TANK_TURRET_RADIUS);
         Geometry turret = new Geometry("Tank turret", turretSphere);
@@ -91,10 +101,14 @@ public class Main extends SimpleApplication {
                 "Common/MatDefs/Misc/Unshaded.j3md");
         mat2.setColor("Color", ColorRGBA.Yellow);
         turret.setMaterial(mat2);
-        tankNode.attachChild(turretBaseNode);
-        turretBaseNode.attachChild(turretNode);
-        turretNode.attachChild(turret);
-        turretNode.setLocalTranslation(new Vector3f(0,TANK_BODY_HEIGHT+TANK_BARREL_RADIUS,0));
+        tankNode.attachChild(turretRotationalNode);
+        
+        turretRotationalNode.attachChild(turretElevationNode);
+        turretElevationNode.attachChild(turretAperture);
+        turretElevationNode.attachChild(turret);
+        
+        turretRotationalNode.setLocalTranslation(new Vector3f(0,TANK_BODY_HEIGHT+TANK_BARREL_RADIUS,0));
+        turretAperture.setLocalTranslation(0,TANK_BARREL_LENGTH/2-BULLET_RADIUS, 0);
         
         Cylinder barrelCyl = new Cylinder(ROUND_THINGS_RES,
                 ROUND_THINGS_RES,TANK_BARREL_RADIUS,TANK_BARREL_LENGTH,
@@ -104,7 +118,7 @@ public class Main extends SimpleApplication {
                 "Common/MatDefs/Misc/Unshaded.j3md");
         mat3.setColor("Color", ColorRGBA.Green);
         barrel.setMaterial(mat3);
-        turretNode.attachChild(barrel);
+        turretElevationNode.attachChild(barrel);
         //barrel.rotate(90*FastMath.DEG_TO_RAD,0,0);
         barrel.move(0, 0, TANK_BARREL_LENGTH/2f+TANK_TURRET_RADIUS-0.1f);
         
@@ -123,6 +137,33 @@ public class Main extends SimpleApplication {
         box.setMaterial(mat1);
         boxNode.attachChild(box);
         return boxNode;
+    }
+    
+    public Node createBullet(ColorRGBA color){
+        Sphere bulletSphere = new Sphere(ROUND_THINGS_RES, 
+                ROUND_THINGS_RES, BULLET_RADIUS);
+        Geometry bullet = new Geometry("Bullet", bulletSphere);
+        /*
+        Material stone = new Material(assetManager,
+                "Common/MatDefs/Light/Lighting.j3md");
+        stone.setTexture("DiffuseMap",assetManager.loadTexture(
+                "Textures/Terrain/Rock/Rock.PNG"));
+        stone.setTexture("NormalMap",assetManager.loadTexture(
+                "Textures/Terrain/Rock/Rock_normal.png"));
+        stone.setBoolean("UseMaterialColors",true);
+        stone.setColor("Ambient", ColorRGBA.DarkGray); 
+        stone.setColor("Diffuse", ColorRGBA.White); 
+        stone.setColor("Specular", ColorRGBA.White);
+        */
+        Material bulletMat = new Material(assetManager, 
+                "Common/MatDefs/Misc/Unshaded.j3md");
+        bulletMat.setColor("Color", color);
+        bullet.setMaterial(bulletMat);
+        
+        Node bulletNode = new Node("Bullet node");
+        bulletNode.setUserData("Gravity force", 0f);
+        bulletNode.attachChild(bullet);
+        return bulletNode;
     }
     
     private void moveForwardZ(Spatial element, float speed, float tpf ) {
@@ -215,10 +256,10 @@ public class Main extends SimpleApplication {
         tank.setLocalTranslation(0,TANK_BODY_HEIGHT,0);
         //flyCam.setMoveSpeed(40);
         initKeys();
-        Node turret = (Node)tank.getChild("Turret base node");
+        Node turret = (Node)tank.getChild("Turret rotation node");
         initCamera(turret);
         initPlayingField();
-        
+        rootNode.attachChild(allBullets);
         rootNode.attachChild(arena);
     }
 
@@ -235,6 +276,27 @@ public class Main extends SimpleApplication {
             }
         }
         moveForwardZ(tank, speed, tpf);
+        
+        List<Spatial> bullets = allBullets.getChildren();
+        
+        for (int i = 0; i < bullets.size(); i++) {
+            Spatial bullet = bullets.get(i);
+            
+            //This condition should be entered for all nodes in AllProjectiles,
+            //but we're checking anyway.
+            if (bullet.getName().equals("Bullet node")) {    
+                moveForwardZ(bullet, BULLET_SPEED, tpf);
+                float grav = bullet.getUserData("Gravity force");
+                grav += GRAVITY*tpf;
+                bullet.move(0, -grav*tpf, 0);
+                bullet.setUserData("Gravity force", grav);
+                
+                if (bullet.getWorldTranslation().getY() <= -1f) {
+                    bullet.removeFromParent();
+                }
+            }
+        }
+        
     }
 
     @Override
@@ -254,7 +316,7 @@ public class Main extends SimpleApplication {
                     isMoving = false;
                 }
             }
-            else if (name.equals("Backward")) {
+            if (name.equals("Backward")) {
                 if (keyPressed){
                     System.out.println("Started moving backward.");
                     isMoving = true;
@@ -262,6 +324,20 @@ public class Main extends SimpleApplication {
                     System.out.println("Stopped moving backward.");
                     isMoving = false;
                 }
+            }
+            if (name.equals("Fire") && keyPressed){
+                
+                Node bullet = createBullet(ColorRGBA.White);
+                allBullets.attachChild(bullet);
+                
+                //Rotate correctly.
+                Node turret = (Node)tank.getChild("Turret elevation node");
+                Quaternion launchrotation = turret.getWorldRotation();
+                bullet.rotate(launchrotation);
+                
+                Vector3f barrelPos = tank.getChild("Turret aperture").getWorldTranslation();
+                bullet.setLocalTranslation(barrelPos);
+                
             }
         }
     };
@@ -285,24 +361,24 @@ public class Main extends SimpleApplication {
                 tank.rotate(0, -FastMath.DEG_TO_RAD*TANK_ROTATE_SPEED*tpf, 0);
             }
             else if (name.equals("Turret left")) {
-                tank.getChild("Turret base node").rotate(
+                tank.getChild("Turret rotation node").rotate(
                         0f,FastMath.DEG_TO_RAD*TURRET_ROTATE_SPEED*tpf,0f);
             }
             else if (name.equals("Turret right")) {
-                tank.getChild("Turret base node").rotate(
+                tank.getChild("Turret rotation node").rotate(
                         0f,-FastMath.DEG_TO_RAD*TURRET_ROTATE_SPEED*tpf,0f);
             }
             else if (name.equals("Turret up")) {
-                if (turretAngle <= 25*FastMath.DEG_TO_RAD) {
+                if (turretAngle <= TURRET_MAX_ELEVATION*FastMath.DEG_TO_RAD) {
                     turretAngle += FastMath.DEG_TO_RAD*TURRET_ELEVATE_SPEED*tpf;
-                    tank.getChild("Turret node").rotate(
+                    tank.getChild("Turret elevation node").rotate(
                         -FastMath.DEG_TO_RAD*TURRET_ELEVATE_SPEED*tpf,0,0);
                 }
             }
             else if (name.equals("Turret down")) {
                 if (turretAngle >= 0) {
                     turretAngle -= FastMath.DEG_TO_RAD*TURRET_ELEVATE_SPEED*tpf;
-                    tank.getChild("Turret node").rotate(
+                    tank.getChild("Turret elevation node").rotate(
                         FastMath.DEG_TO_RAD*TURRET_ELEVATE_SPEED*tpf,0,0);
                 }
             }
