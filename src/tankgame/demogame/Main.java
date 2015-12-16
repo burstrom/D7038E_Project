@@ -11,9 +11,11 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
+import com.jme3.scene.CameraNode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.CameraControl.ControlDirection;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Sphere;
@@ -26,29 +28,42 @@ import com.jme3.scene.shape.Sphere;
  */
 
 public class Main extends SimpleApplication {
-
+    //General constants.
     public static final int MAX_PLAYERS = 8;
     public static final int ROUND_THINGS_RES = 100;
     
+    //Environment constants
     public static final float PLAYINGFIELD_SIDE = 600f;
+    
+    //Tank constants
     public static final float TANK_BODY_LENGTH = 8f;
     public static final float TANK_BODY_WIDTH = 6f;
     public static final float TANK_BODY_HEIGHT = 2.5f;
     public static final float TANK_TURRET_RADIUS = 4f;
     public static final float TANK_BARREL_RADIUS = 1f;
-    public static final float TANK_BARREL_LENGTH = 3f;
+    public static final float TANK_BARREL_LENGTH = 8f;
     public static final float TANK_ACCELERATION = 5f;
-    public static final float TANK_DECELERATION = 18f;
+    public static final float TANK_DECELERATION = 25f;
     public static final float TANK_MAX_SPEED = 30f;
-    
     //Following are in degrees per sec.
-    public static final float TANK_ROTATE_SPEED = 50f; 
+    public static final float TANK_ROTATE_SPEED = 40f; 
     public static final float TURRET_ROTATE_SPEED = 50f; 
-    public static final float TURRET_ELEVATE_SPEED = 5f;
+    public static final float TURRET_ELEVATE_SPEED = 10f;
     
-    private float speed = 0;
-    private Node tank;
+    //available variables.
+    private CameraNode camNode;
+    private Node arena = new Node();
+    private Node tank = new Node();
+    
+    
     private boolean isMoving = false;
+    private float speed = 0;
+    private float turretAngle = 0;
+    
+    
+    
+    
+    
     
     
     public Node createTank(ColorRGBA color){
@@ -67,6 +82,7 @@ public class Main extends SimpleApplication {
         
         tankNode.attachChild(body);
         
+        Node turretBaseNode = new Node("Turret base node");
         Node turretNode = new Node("Turret node");
         Sphere turretSphere = new Sphere(ROUND_THINGS_RES, 
                 ROUND_THINGS_RES, TANK_TURRET_RADIUS);
@@ -75,7 +91,8 @@ public class Main extends SimpleApplication {
                 "Common/MatDefs/Misc/Unshaded.j3md");
         mat2.setColor("Color", ColorRGBA.Yellow);
         turret.setMaterial(mat2);
-        tankNode.attachChild(turretNode);
+        tankNode.attachChild(turretBaseNode);
+        turretBaseNode.attachChild(turretNode);
         turretNode.attachChild(turret);
         turretNode.setLocalTranslation(new Vector3f(0,TANK_BODY_HEIGHT+TANK_BARREL_RADIUS,0));
         
@@ -94,6 +111,20 @@ public class Main extends SimpleApplication {
         return tankNode;
     }
     
+    //For testing purposes.
+    public Node createBox
+            (String name, float length, float height, float width, ColorRGBA color) {
+        Node boxNode = new Node(name);
+        Box boxGeom = new Box(length,height,width);
+        Geometry box = new Geometry(name+" geometry", boxGeom);
+        Material mat1 = new Material(assetManager, 
+                "Common/MatDefs/Misc/Unshaded.j3md");
+        mat1.setColor("Color", color);
+        box.setMaterial(mat1);
+        boxNode.attachChild(box);
+        return boxNode;
+    }
+    
     private void moveForwardZ(Spatial element, float speed, float tpf ) {
         //This piece of code wizardry moves it in the direction it's pointing
         //Turns out it's a lot harder than you'd think.
@@ -108,10 +139,7 @@ public class Main extends SimpleApplication {
         element.move(forward.mult(distance));
     }
     
-    public static void main(String[] args) {
-        Main app = new Main();
-        app.start();
-    }
+    
     
     private void initKeys() {
         
@@ -139,15 +167,59 @@ public class Main extends SimpleApplication {
                 "Turret up", "Turret down");
   };
     
+    private void initCamera(Node target) {
+        flyCam.setEnabled(false);
+        //create the camera Node
+        camNode = new CameraNode("Camera Node", cam);
+        //This mode means that camera copies the movements of the target:
+        camNode.setControlDir(ControlDirection.SpatialToCamera);
+        //Attach the camNode to the target:
+        target.attachChild(camNode);
+        //Move camNode, e.g. behind and above the target:
+        camNode.setLocalTranslation(new Vector3f(0, 20, -60));
+        //Rotate the camNode to look at the target:
+        camNode.lookAt(target.getLocalTranslation(), Vector3f.UNIT_Y);
+    }
+    
+    private void initPlayingField() {
+        
+        Node field = createBox("Playing field", 
+                PLAYINGFIELD_SIDE, 1f, PLAYINGFIELD_SIDE, ColorRGBA.Gray);
+        Node obstacle1 = createBox("Obstacle 1", 5f,15f,5f, ColorRGBA.LightGray);
+        Node obstacle2 = createBox("Obstacle 2", 5f,15f,5f, ColorRGBA.LightGray);
+        Node obstacle3 = createBox("Obstacle 3", 5f,15f,5f, ColorRGBA.LightGray);
+        Node obstacle4 = createBox("Obstacle 4", 5f,15f,5f, ColorRGBA.LightGray);
+        
+        arena.attachChild(field);
+        arena.attachChild(obstacle1);
+        arena.attachChild(obstacle2);
+        arena.attachChild(obstacle3);
+        arena.attachChild(obstacle4);
+        field.setLocalTranslation(0, -0.5f, 0);
+        obstacle1.setLocalTranslation(100f, 15f, 0f);
+        obstacle2.setLocalTranslation(-100f, 15f, 0f);
+        obstacle3.setLocalTranslation(0f, 15f, 100f);
+        obstacle4.setLocalTranslation(0f, 15f, -100f);
+    }
+    
+    public static void main(String[] args) {
+        Main app = new Main();
+        app.start();
+    }
+    
     @Override
     public void simpleInitApp() {
 
         tank = createTank(ColorRGBA.Blue);
         rootNode.attachChild(tank);
-        tank.move(0, -10, -50);
-        flyCam.setMoveSpeed(0);
+        tank.setLocalTranslation(0,TANK_BODY_HEIGHT,0);
+        //flyCam.setMoveSpeed(40);
         initKeys();
+        Node turret = (Node)tank.getChild("Turret base node");
+        initCamera(turret);
+        initPlayingField();
         
+        rootNode.attachChild(arena);
     }
 
     @Override
@@ -211,6 +283,28 @@ public class Main extends SimpleApplication {
             }
             else if (name.equals("Turn right")) {
                 tank.rotate(0, -FastMath.DEG_TO_RAD*TANK_ROTATE_SPEED*tpf, 0);
+            }
+            else if (name.equals("Turret left")) {
+                tank.getChild("Turret base node").rotate(
+                        0f,FastMath.DEG_TO_RAD*TURRET_ROTATE_SPEED*tpf,0f);
+            }
+            else if (name.equals("Turret right")) {
+                tank.getChild("Turret base node").rotate(
+                        0f,-FastMath.DEG_TO_RAD*TURRET_ROTATE_SPEED*tpf,0f);
+            }
+            else if (name.equals("Turret up")) {
+                if (turretAngle <= 25*FastMath.DEG_TO_RAD) {
+                    turretAngle += FastMath.DEG_TO_RAD*TURRET_ELEVATE_SPEED*tpf;
+                    tank.getChild("Turret node").rotate(
+                        -FastMath.DEG_TO_RAD*TURRET_ELEVATE_SPEED*tpf,0,0);
+                }
+            }
+            else if (name.equals("Turret down")) {
+                if (turretAngle >= 0) {
+                    turretAngle -= FastMath.DEG_TO_RAD*TURRET_ELEVATE_SPEED*tpf;
+                    tank.getChild("Turret node").rotate(
+                        FastMath.DEG_TO_RAD*TURRET_ELEVATE_SPEED*tpf,0,0);
+                }
             }
         }
     };
