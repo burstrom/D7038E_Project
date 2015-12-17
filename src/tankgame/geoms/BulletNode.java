@@ -10,8 +10,8 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
-import static tankgame.demogame.Main.BULLET_RADIUS;
-import static tankgame.demogame.Main.ROUND_THINGS_RES;
+import static tankgame.settings.Constants.BULLET_RADIUS;
+import static tankgame.settings.Constants.ROUND_THINGS_RES;
 
 /**
  *

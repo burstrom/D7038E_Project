@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package tankgame.geoms;
 
 import com.jme3.asset.AssetManager;
@@ -13,14 +9,14 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Sphere;
-import static tankgame.demogame.Main.BULLET_RADIUS;
-import static tankgame.demogame.Main.ROUND_THINGS_RES;
-import static tankgame.demogame.Main.TANK_BARREL_LENGTH;
-import static tankgame.demogame.Main.TANK_BARREL_RADIUS;
-import static tankgame.demogame.Main.TANK_BODY_HEIGHT;
-import static tankgame.demogame.Main.TANK_BODY_LENGTH;
-import static tankgame.demogame.Main.TANK_BODY_WIDTH;
-import static tankgame.demogame.Main.TANK_TURRET_RADIUS;
+import static tankgame.settings.Constants.BULLET_RADIUS;
+import static tankgame.settings.Constants.ROUND_THINGS_RES;
+import static tankgame.settings.Constants.TANK_BARREL_LENGTH;
+import static tankgame.settings.Constants.TANK_BARREL_RADIUS;
+import static tankgame.settings.Constants.TANK_BODY_HEIGHT;
+import static tankgame.settings.Constants.TANK_BODY_LENGTH;
+import static tankgame.settings.Constants.TANK_BODY_WIDTH;
+import static tankgame.settings.Constants.TANK_TURRET_RADIUS;
 
 /**
  * Node for the tanks in game

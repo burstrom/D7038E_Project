@@ -28,7 +28,7 @@ import java.util.List;
  * 
  */
 
-public class Main extends SimpleApplication {
+public class StandaloneTest extends SimpleApplication {
     //General constants.
     public static final int MAX_PLAYERS = 8;
     public static final int ROUND_THINGS_RES = 100;
@@ -66,13 +66,6 @@ public class Main extends SimpleApplication {
     private boolean isMoving = false;
     private float speed = 0;
     private float turretAngle = 0;
-    
-    
-    
-    
-    
-    
-    
     
     public Node createTank(ColorRGBA color){
         //Tanks consist of two nodes.
@@ -244,7 +237,7 @@ public class Main extends SimpleApplication {
     }
     
     public static void main(String[] args) {
-        Main app = new Main();
+        StandaloneTest app = new StandaloneTest();
         app.start();
     }
     
