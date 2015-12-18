@@ -78,7 +78,7 @@ public class Main extends SimpleApplication{
 		Node cannonPart3 = (Node) cannonPart2.getChild("CannonPart3Geom-ogremesh");
 		Node engine = (Node) tankNode.getChild("EngineGeom-ogremesh");
 		
-		engine.rotate(0, tpf*8, 0);
+		engine.rotate(0, tpf*16, 0);
 		
 		if (rotateUp) {
 			rotation += tpf/8;
@@ -119,17 +119,20 @@ public class Main extends SimpleApplication{
 		tankCannonLinkNode.setLocalTranslation(0, 0.28472f, 2.08453f);
 		tankCannonMussleNode.setLocalTranslation(0, -0.16652f, 1.50661f);
 		tankEngineNode.setLocalTranslation(0, 0.32361f, -4.62786f);
+		tankEngineNode.getChild(0).setLocalTranslation(0, 0, -0.08f);
 		
-		tankBodyNode.rotate(0, FastMath.PI/2, 0);
+		tankBodyNode.rotate(0, FastMath.PI, 0);
+		
+		ColorRGBA tankColor = ColorRGBA.Blue;
 		
 		Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-		mat.setTexture("DiffuseMap", assetManager.loadTexture("Models/HoverTank/tank_diffuse.jpg"));
-		mat.setTexture("NormalMap", assetManager.loadTexture("Models/HoverTank/tank_normals.png"));
-		mat.setTexture("SpecularMap", assetManager.loadTexture("Models/HoverTank/tank_specular.jpg"));
+		mat.setTexture("DiffuseMap", assetManager.loadTexture("Textures/MetalGalvanized.jpg"));
+		//mat.setTexture("NormalMap", assetManager.loadTexture("Textures/MetalGalvanized.jpg"));
+		//mat.setTexture("SpecularMap", assetManager.loadTexture("Models/HoverTank/tank_specular.jpg"));
 		mat.setBoolean("UseMaterialColors",true); 
 		mat.setColor("Diffuse", ColorRGBA.White);
-		mat.setColor("Ambient", ColorRGBA.White);
-		mat.setColor("Specular", ColorRGBA.White);
+		mat.setColor("Ambient", tankColor.mult(0.5f));
+		//mat.setColor("Specular", ColorRGBA.White);
 		tankBodyNode.setMaterial(mat);
 		
 		return tankBodyNode;
