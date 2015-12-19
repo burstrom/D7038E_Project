@@ -1,6 +1,7 @@
 package tankgame;
 
 
+import tankgame.util.Util;
 import com.jme3.app.SimpleApplication;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Message;
@@ -37,7 +38,7 @@ import javax.swing.text.DefaultCaret;
  * 
  * @author hj
  */
-public class GameServer extends SimpleApplication {
+public class GameServer extends GameCommon {
 
     /*
      * This is our server object that handles all communication. 

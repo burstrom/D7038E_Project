@@ -1,5 +1,6 @@
 package tankgame;
 
+import tankgame.util.Util;
 import com.jme3.app.SimpleApplication;
 import com.jme3.network.Client;
 import com.jme3.network.Message;
@@ -7,10 +8,9 @@ import com.jme3.network.MessageListener;
 import com.jme3.network.Network;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
-import com.sun.corba.se.impl.logging.UtilSystemException;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import tankgame.Util.NetworkMessage;
+import tankgame.util.Util.NetworkMessage;
 
 /**
  * Example of networking with SpiderMonkey and threads in jMonkeyEngeine (Java).
@@ -22,7 +22,7 @@ import tankgame.Util.NetworkMessage;
  *
  * @author hj
  */
-public class GameClient extends SimpleApplication {
+public class GameClient extends GameCommon {
 
     /*
      * Our server object that handles communication behind the scenes. 

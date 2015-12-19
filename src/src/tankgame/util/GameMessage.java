@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package tankgame;
+package tankgame.util;
 
 import com.jme3.network.AbstractMessage;
 import com.jme3.network.serializing.Serializable;
