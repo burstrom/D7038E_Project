@@ -1,4 +1,4 @@
-package tankgame.demogame;
+package demo;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.KeyInput;
