@@ -3,20 +3,7 @@ package tankgame.geoms;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Cylinder;
-import com.jme3.scene.shape.Sphere;
-import static tankgame.settings.Constants.BULLET_RADIUS;
-import static tankgame.settings.Constants.ROUND_THINGS_RES;
-import static tankgame.settings.Constants.TANK_BARREL_LENGTH;
-import static tankgame.settings.Constants.TANK_BARREL_RADIUS;
-import static tankgame.settings.Constants.TANK_BODY_HEIGHT;
-import static tankgame.settings.Constants.TANK_BODY_LENGTH;
-import static tankgame.settings.Constants.TANK_BODY_WIDTH;
-import static tankgame.settings.Constants.TANK_TURRET_RADIUS;
 
 /**
  * Node for the tanks in game
@@ -24,62 +11,57 @@ import static tankgame.settings.Constants.TANK_TURRET_RADIUS;
  * @author MrIngelborn
  */
 public class TankNode extends GeomNode {
-
-	public TankNode(String name) {
+	private ColorRGBA color;
+	
+	/**
+	 * @param name Name of the Node
+	 * @param color THe color of the tank
+	 */
+	public TankNode(String name, ColorRGBA color) {
 		super(name);
+		this.color = color;
 	}
 	
 	/**
-	 * Basically Sirfrog's kod from the Demo Game
-	 * @param assetManager 
+	 * Creates the nodes and geomeries under the main tank Node.
+	 * 
+	 * Called by the client only.
+	 * 
+	 * @param assetManager The games AssetManager for importing assets
 	 */
 	@Override
 	public void createGeom(AssetManager assetManager) {
-		//Tanks consist of two nodes.
-		//The tanknode and the turretnode.
-        //since the turret is actually a sphere lodged inside the tank
-        //The whole shebang will be controllable.
+		//Import all the different tank parts
+		Node tankBodyNode = (Node) assetManager.loadModel("Models/HoverTank/TankBodyGeom.mesh.xml");
+		Node tankCannonBaseNode = (Node) assetManager.loadModel("Models/HoverTank/TankCannonGeom.mesh.xml");
+		Node tankCannonLinkNode = (Node) assetManager.loadModel("Models/HoverTank/CannonPart2Geom.mesh.xml");
+		Node tankCannonMussleNode = (Node) assetManager.loadModel("Models/HoverTank/CannonPart3Geom.mesh.xml");
+		Node tankEngineNode = (Node) assetManager.loadModel("Models/HoverTank/EngineGeom.mesh.xml");
 		
-        Box bodyGeom = new Box(TANK_BODY_WIDTH,TANK_BODY_HEIGHT,TANK_BODY_LENGTH);
-        Geometry body = new Geometry("Tank body", bodyGeom);
-        Material mat1 = new Material(assetManager, 
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        mat1.setColor("Color", ColorRGBA.Blue);
-        body.setMaterial(mat1);
-        
-        this.attachChild(body);
-        
-        Node turretRotationalNode = new Node("Turret rotation node");
-        Node turretElevationNode = new Node("Turret elevation node");
-        Node turretAperture = new Node("Turret aperture");
-        
-        Sphere turretSphere = new Sphere(ROUND_THINGS_RES, 
-                ROUND_THINGS_RES, TANK_TURRET_RADIUS);
-        Geometry turret = new Geometry("Tank turret", turretSphere);
-        Material mat2 = new Material(assetManager, 
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        mat2.setColor("Color", ColorRGBA.Yellow);
-        turret.setMaterial(mat2);
-        this.attachChild(turretRotationalNode);
-        
-        turretRotationalNode.attachChild(turretElevationNode);
-        turretElevationNode.attachChild(turretAperture);
-        turretElevationNode.attachChild(turret);
-        
-        turretRotationalNode.setLocalTranslation(new Vector3f(0,TANK_BODY_HEIGHT+TANK_BARREL_RADIUS,0));
-        turretAperture.setLocalTranslation(0,TANK_BARREL_LENGTH/2-BULLET_RADIUS, 0);
-        
-        Cylinder barrelCyl = new Cylinder(ROUND_THINGS_RES,
-                ROUND_THINGS_RES,TANK_BARREL_RADIUS,TANK_BARREL_LENGTH,
-                true);
-        Geometry barrel = new Geometry("Tank barrel", barrelCyl);
-        Material mat3 = new Material(assetManager, 
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        mat3.setColor("Color", ColorRGBA.Green);
-        barrel.setMaterial(mat3);
-        turretElevationNode.attachChild(barrel);
-        //barrel.rotate(90*FastMath.DEG_TO_RAD,0,0);
-        barrel.move(0, 0, TANK_BARREL_LENGTH/2f+TANK_TURRET_RADIUS-0.1f);
+		//Attach the parts the their parents
+		tankCannonLinkNode.attachChild(tankCannonMussleNode);
+		tankCannonBaseNode.attachChild(tankCannonLinkNode);
+		tankBodyNode.attachChild(tankEngineNode);
+		tankBodyNode.attachChild(tankCannonBaseNode);
+		this.attachChild(tankBodyNode);
+		
+		//Set the local translation for all parts
+		tankCannonBaseNode.setLocalTranslation(0, 2.0985f, -2.14132f);
+		tankCannonLinkNode.setLocalTranslation(0, 0.28472f, 2.08453f);
+		tankCannonMussleNode.setLocalTranslation(0, -0.16652f, 1.50661f);
+		tankEngineNode.setLocalTranslation(0, 0.32361f, -4.62786f);
+		tankEngineNode.getChild(0).setLocalTranslation(0, 0, -0.08f);
+		
+		//Set the tank's material and color
+		Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+		mat.setTexture("DiffuseMap", assetManager.loadTexture("Textures/MetalGalvanized.jpg"));
+		//mat.setTexture("NormalMap", assetManager.loadTexture("Textures/MetalGalvanized.jpg"));
+		//mat.setTexture("SpecularMap", assetManager.loadTexture("Models/HoverTank/tank_specular.jpg"));
+		mat.setBoolean("UseMaterialColors",true); 
+		mat.setColor("Diffuse", ColorRGBA.White);
+		mat.setColor("Ambient", color.mult(0.5f));
+		//mat.setColor("Specular", ColorRGBA.White);
+		tankBodyNode.setMaterial(mat);
 	}
 	
 }
