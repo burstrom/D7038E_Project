@@ -10,16 +10,16 @@ import static tankgame.settings.Constants.TANK_ACCELERATION;
 import static tankgame.settings.Constants.TANK_ROTATE_SPEED;
 import static tankgame.settings.Constants.TURRET_ELEVATE_SPEED;
 import static tankgame.settings.Constants.CANNON_ROTATE_SPEED;
-import tankgame.IClientGame;
+import tankgame.IInputHandler;
 
 /**
  *
  * @author MrIngelborn
  */
 public class MyAnalogListener implements AnalogListener {
-	IClientGame game;
+	IInputHandler game;
 
-	public MyAnalogListener(IClientGame game) {
+	public MyAnalogListener(IInputHandler game) {
 		this.game = game;
 	}
 

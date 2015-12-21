@@ -23,7 +23,7 @@ import tankgame.settings.Constants;
  *
  * @author MrIngelborn
  */
-public class SinglePlayerGame extends SimpleApplication implements IClientGame {
+public class SinglePlayerGame extends SimpleApplication implements IInputHandler {
 
 	private KeyBindings keyBindings;
 	private TankNode tank;

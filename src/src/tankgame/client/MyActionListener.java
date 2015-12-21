@@ -5,7 +5,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
-import tankgame.IClientGame;
+import tankgame.IInputHandler;
 import tankgame.geoms.BulletNode;
 
 /**
@@ -14,9 +14,9 @@ import tankgame.geoms.BulletNode;
  */
 public class MyActionListener implements ActionListener {
 	private boolean isMoving = false;
-	private IClientGame game;
+	private IInputHandler game;
 	
-	public MyActionListener(IClientGame game) {
+	public MyActionListener(IInputHandler game) {
 		this.game = game;
 	}
 

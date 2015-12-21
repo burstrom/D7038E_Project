@@ -10,7 +10,7 @@ import com.jme3.math.Vector3f;
  * Interface for the Action and Analog Listeners to hook on to
  * @author MrIngelborn
  */
-public interface IClientGame {
+public interface IInputHandler {
 
 	public void shootBullet();
 

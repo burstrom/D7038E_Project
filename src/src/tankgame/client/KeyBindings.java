@@ -3,7 +3,7 @@ package tankgame.client;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
-import tankgame.IClientGame;
+import tankgame.IInputHandler;
 
 /**
  *
@@ -14,7 +14,7 @@ public class KeyBindings {
 	private MyAnalogListener analogListener;
 	private InputManager inputManager;
 	
-	public KeyBindings(IClientGame game, InputManager inputManager) {
+	public KeyBindings(IInputHandler game, InputManager inputManager) {
 		actionListener = new MyActionListener(game);
 		analogListener = new MyAnalogListener(game);
 		this.inputManager = inputManager;
