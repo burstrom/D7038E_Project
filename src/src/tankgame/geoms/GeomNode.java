@@ -12,6 +12,8 @@ import com.jme3.scene.Node;
  * @author MrIngelborn
  */
 public abstract class GeomNode extends Node {
+	protected boolean hasGeoms = false;
+	
 	public GeomNode (String name) {
 		super(name);
 	}
@@ -22,5 +24,8 @@ public abstract class GeomNode extends Node {
 	 * 
 	 * @param assetManager The Games Asset manager
 	 */
-	public abstract void createGeom(AssetManager assetManager);
+	public void createGeom(AssetManager assetManager) {
+		this.hasGeoms = true;
+	}
+	public abstract void onUpdate(float tpf);
 }

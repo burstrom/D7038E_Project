@@ -15,7 +15,7 @@ public class Constants {
     
     //Environment constants
     public static final float PLAYINGFIELD_SIDE = 600f;
-    public static final float GRAVITY = 180f;
+    public static final float GRAVITY = 10f;
     
     //Tank constants
     public static final float TANK_BODY_LENGTH = 8f;
@@ -28,12 +28,12 @@ public class Constants {
     public static final float TANK_DECELERATION = 25f;
     public static final float TANK_MAX_SPEED = 30f;
     //Following are in degrees per sec.
-    public static final float TANK_ROTATE_SPEED = 40f; 
-    public static final float TURRET_ROTATE_SPEED = 50f; 
-    public static final float TURRET_ELEVATE_SPEED = 10f;
-    public static final float TURRET_MAX_ELEVATION = 20f; //In degrees.
+    public static final float TANK_ROTATE_SPEED = 0.7f; // In rads
+    public static final float CANNON_ROTATE_SPEED = 20f; // In rads
+    public static final float TURRET_ELEVATE_SPEED = 20f; // In rads
+    public static final float CANNON_MAX_ELEVATION = 0.35f; //In radians.
     
     //bullet constants
-    public static final float BULLET_RADIUS = TANK_BARREL_RADIUS;
-    public static final float BULLET_SPEED = 800f;
+    public static final float BULLET_RADIUS = 0.2f;
+    public static final float BULLET_SPEED = 30f;
 }
