@@ -8,7 +8,6 @@ import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
 import tankgame.settings.Constants;
 import static tankgame.settings.Constants.BULLET_RADIUS;
@@ -20,16 +19,18 @@ import tankgame.util.Movement;
  * @author MrIngelborn
  */
 public class BulletNode extends GeomNode {
-
 	private ColorRGBA color;
+	private float gravityVelocity;
 
 	public BulletNode(String name, ColorRGBA color) {
 		super(name);
 		this.color = color;
+		gravityVelocity = 0;
 	}
 
 	@Override
 	public void createGeom(AssetManager assetManager) {
+		super.createGeom(assetManager);
 		Sphere bulletSphere = new Sphere(
 				ROUND_THINGS_RES,
 				ROUND_THINGS_RES,
@@ -41,9 +42,6 @@ public class BulletNode extends GeomNode {
 		bulletMat.setColor("Color", color);
 		bullet.setMaterial(bulletMat);
 
-		//Set initial gravity velocity
-		this.setUserData("Gravity force", 0f);
-
 		this.attachChild(bullet);
 	}
 
@@ -53,10 +51,8 @@ public class BulletNode extends GeomNode {
 		Movement.moveForwardZ(this, Constants.BULLET_SPEED, tpf);
 
 		//Apply gravity physics
-		float grav = this.getUserData("Gravity force");
-		grav += Constants.GRAVITY * tpf;
-		this.move(0, -grav * tpf, 0);
-		this.setUserData("Gravity force", grav);
+		gravityVelocity += Constants.GRAVITY * tpf;
+		this.move(0, -gravityVelocity * tpf, 0);
 
 		if (this.getWorldTranslation().getY() <= -1f) {
 			this.removeFromParent();
