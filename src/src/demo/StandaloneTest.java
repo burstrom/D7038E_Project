@@ -73,9 +73,17 @@ public class StandaloneTest extends SimpleApplication {
     
     private boolean isMoving = false;
     private float speed = 0;
+    
+    private float steeringValue = 0;
+    private float steeringForce = 0.3f;
+    private float accelerationValue = 0;
+    private float accelerationForce = 50000; //?
+    private float reverseForce = 40000;
+    private float brakeForce = 70000;
     private float turretAngle = 0;
     
     private BulletAppState bulletAppState;
+    private VehicleControl vehicle;
     
     public VehicleControl attachTankPhysics(Node tankNode) {
         CompoundCollisionShape compoundShape = new CompoundCollisionShape();
@@ -85,7 +93,7 @@ public class StandaloneTest extends SimpleApplication {
         SphereCollisionShape sphere = new SphereCollisionShape(TANK_TURRET_RADIUS);
         compoundShape.addChildShape(sphere, new Vector3f(0, TANK_TURRET_RADIUS, 0));
         
-        VehicleControl vehicle = new VehicleControl(compoundShape, 1000);
+        vehicle = new VehicleControl(compoundShape, 1000);
         tankNode.addControl(vehicle);
         
         //BEGIN COPYPASTA CODE
@@ -282,7 +290,9 @@ public class StandaloneTest extends SimpleApplication {
 
         // Add the names to the action listener.
         //inputManager.addListener(actionListener, "Toggle laser", "Shoot","Restart");
-        inputManager.addListener(actionListener,"Forward", "Backward", "Fire");
+        inputManager.addListener(actionListener,"Forward", "Backward", 
+                "Turn left", "Turn right", "Turret left", "Turret right", 
+                "Turret up", "Turret down");
         inputManager.addListener(analogListener,"Forward", "Backward", 
                 "Turn left", "Turn right", "Turret left", "Turret right", 
                 "Turret up", "Turret down");
@@ -345,7 +355,7 @@ public class StandaloneTest extends SimpleApplication {
         bulletAppState.getPhysicsSpace().enableDebug(assetManager);
         
         tank = createTank(ColorRGBA.Blue);
-        tank.setLocalTranslation(0,10f,0);
+        tank.setLocalTranslation(0,3.5f,0);
         VehicleControl vehicle = attachTankPhysics(tank);
         bulletAppState.getPhysicsSpace().add(vehicle);
         
@@ -364,6 +374,7 @@ public class StandaloneTest extends SimpleApplication {
     public void simpleUpdate(float tpf) {
         //TODO: add update code
         //System.out.println("Updating.");
+        /*
         if (!isMoving) {
             if (speed > 0) {
                 speed -= TANK_DECELERATION*tpf;
@@ -373,6 +384,7 @@ public class StandaloneTest extends SimpleApplication {
             }
         }
         moveForwardZ(tank, speed, tpf);
+        */
         
         List<Spatial> bullets = allBullets.getChildren();
         
@@ -400,8 +412,93 @@ public class StandaloneTest extends SimpleApplication {
     public void simpleRender(RenderManager rm) {
         //TODO: add render code
     }
-    
+  
+    private ActionListener actionListener = new ActionListener() {
+        public void onAction(String name, boolean keyPressed, float tpf) {
+            if (name.equals("Forward")) {
+                if (keyPressed){
+                    System.out.println("Started moving forward.");
+                    accelerationValue += accelerationForce;
+                } else {
+                    System.out.println("Stopped moving forward.");
+                    accelerationValue -= accelerationForce;
+                }
+            }
+            else if (name.equals("Backward")) {
+                if (keyPressed){
+                    System.out.println("Started moving backward.");
+                    accelerationValue -= reverseForce;
+                } else {
+                    System.out.println("Stopped moving backward.");
+                    accelerationValue += reverseForce;
+                }
+            }
+            if (name.equals("Turn left")) {
+                if (keyPressed){
+                    System.out.println("Started turning left.");
+                    steeringValue += steeringForce;
+                } else {
+                    System.out.println("Stopped turning left.");
+                    steeringValue -= steeringForce;
+                }
+            }
+            else if (name.equals("Turn right")) {
+                if (keyPressed){
+                    System.out.println("Started turning right.");
+                    steeringValue -= steeringForce;
+                } else {
+                    System.out.println("Stopped turning right.");
+                    steeringValue += steeringForce;
+                }
+            }
+            if (name.equals("Fire") && keyPressed){
+                
+                
+            }
+        }
+    };
 
+    private AnalogListener analogListener = new AnalogListener() {
+        public void onAnalog(String name, float value, float tpf) {
+            if (name.equals("Forward")) {
+                vehicle.accelerate(accelerationValue*tpf);
+            }
+            else if (name.equals("Backward")) {
+                vehicle.accelerate(accelerationValue*tpf);
+            }
+            if (name.equals("Turn left")) {
+                vehicle.steer(steeringValue);
+            }
+            else if (name.equals("Turn right")) {
+                vehicle.steer(steeringValue);
+            }
+            if (name.equals("Turret left")) {
+                tank.getChild("Turret rotation node").rotate(
+                        0f,FastMath.DEG_TO_RAD*TURRET_ROTATE_SPEED*tpf,0f);
+            }
+            else if (name.equals("Turret right")) {
+                tank.getChild("Turret rotation node").rotate(
+                        0f,-FastMath.DEG_TO_RAD*TURRET_ROTATE_SPEED*tpf,0f);
+            }
+            if (name.equals("Turret up")) {
+                if (turretAngle <= TURRET_MAX_ELEVATION*FastMath.DEG_TO_RAD) {
+                    turretAngle += FastMath.DEG_TO_RAD*TURRET_ELEVATE_SPEED*tpf;
+                    tank.getChild("Turret elevation node").rotate(
+                        -FastMath.DEG_TO_RAD*TURRET_ELEVATE_SPEED*tpf,0,0);
+                }
+            }
+            else if (name.equals("Turret down")) {
+                if (turretAngle >= 0) {
+                    turretAngle -= FastMath.DEG_TO_RAD*TURRET_ELEVATE_SPEED*tpf;
+                    tank.getChild("Turret elevation node").rotate(
+                        FastMath.DEG_TO_RAD*TURRET_ELEVATE_SPEED*tpf,0,0);
+                }
+            }
+        }
+    };
+    
+    
+/*
     private ActionListener actionListener = new ActionListener() {
         public void onAction(String name, boolean keyPressed, float tpf) {
             if (name.equals("Forward")) {
@@ -481,6 +578,6 @@ public class StandaloneTest extends SimpleApplication {
             }
         }
     };
-  
+*/  
     
 }
