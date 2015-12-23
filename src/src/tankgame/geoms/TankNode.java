@@ -8,6 +8,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import tankgame.settings.Constants;
+import tankgame.util.Movement;
 
 /**
  * Node for the tanks in game
@@ -16,9 +17,9 @@ import tankgame.settings.Constants;
  */
 public class TankNode extends GeomNode {
 	private ColorRGBA color;
-	private float rotation = 0, elevation = 0;
+	private float rotation = 0, elevation = 0, speed = 0;
 	private Node bodyNode, cannonNode, cannonLinkNode, cannonBarrelNode, engineNode, apertureNode;
-	private Vector3f speed;
+	private boolean accelerating = false;
 	
 	/**
 	 * @param name Name of the Node
@@ -27,7 +28,6 @@ public class TankNode extends GeomNode {
 	public TankNode(String name, ColorRGBA color) {
 		super(name);
 		this.color = color;
-		this.speed = new Vector3f();
 	}
 	
 	/**
@@ -85,6 +85,25 @@ public class TankNode extends GeomNode {
 	 */
 	public void onUpdate(float tpf) {
 		this.engineNode.rotate(0, tpf*20, 0);
+		
+		//Deaccelerate if not accelerating
+		if (!accelerating) {
+			if (speed > 0) {
+				// Make sure the speed don't make it to the other way of the zero
+				float deceleration = Math.min(Constants.TANK_DECELERATION* tpf, speed);
+				this.speed -= deceleration;
+			}
+			else if (speed < 0){
+				// Make sure the speed don't make it to the other way of the zero
+				float deceleration = Math.max(-Constants.TANK_DECELERATION* tpf, speed);
+				this.speed -= deceleration;
+			}
+		}
+		// Move the tank according to its speed
+		if (speed != 0) {
+			Movement.moveForwardZ(this, speed, tpf);
+		}
+		//System.out.println("Speed: " + speed);
 	}
 	
 	/**
@@ -134,9 +153,8 @@ public class TankNode extends GeomNode {
 	 * @param direction Direction to measure the speed in
 	 * @return The speed of the tank in the direction
 	 */
-	public float getSpeed(Vector3f direction) {
-		Vector3f speedInDirection = speed.project(direction);
-		return speedInDirection.distance(Vector3f.ZERO);
+	public float getSpeed() {
+		return this.speed;
 	}
 	
 	/**
@@ -144,11 +162,14 @@ public class TankNode extends GeomNode {
 	 * @param direction Direction of the acceleration
 	 * @param acceleration magnitude of the acceleration
 	 */
-	public void accelerate(Vector3f direction, float acceleration) {
-		//Create a vector for the acceleration
-		Vector3f accVector = direction.normalize().multLocal(acceleration);
-		//Add the acceleraton vector onto the tank's speed vector.
-		this.speed.addLocal(accVector);
+	public void accelerate(float acceleration) {
+		// Calculate the new speed
+		float newSpeed = this.speed + acceleration;
+		// Make dure the new speed in within bounds
+		newSpeed = Math.max(newSpeed, -Constants.TANK_MAX_SPEED);
+		newSpeed = Math.min(newSpeed, Constants.TANK_MAX_SPEED);
+		// Set the speed to the new speed
+		this.speed = newSpeed;
  	}
 	
 	/**
@@ -174,6 +195,10 @@ public class TankNode extends GeomNode {
 	 */
 	public void addElevation(float angle) {
 		this.setElevation(elevation+angle);
+	}
+
+	public void setAccelerating(boolean shouldAccelerate) {
+		this.accelerating = shouldAccelerate;
 	}
 	
 }

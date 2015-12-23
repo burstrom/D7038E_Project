@@ -8,6 +8,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
@@ -62,7 +63,6 @@ public class SinglePlayerGame extends SimpleApplication implements IInputHandler
 		super.simpleUpdate(tpf);
 		tank.onUpdate(tpf);
 		for (Spatial child : allBulletsNode.getChildren()) {
-			
 		}
 	}
 
@@ -90,17 +90,15 @@ public class SinglePlayerGame extends SimpleApplication implements IInputHandler
 
 		//System.out.println("Shot placed at: \n" + barrelPos);
 	}
-	
+
 	/**
 	 * Applys acceleration to the tank in the specified direction
+	 *
 	 * @param direction The direction of the acceleration force (normalized)
 	 * @param acceleration The acceleration to be applied
 	 */
-	public void accelerateTank(Vector3f direction, float acceleration) {
-		float tankSpeed = tank.getSpeed(direction);
-		if (tankSpeed <= Constants.TANK_MAX_SPEED) {
-			tank.accelerate(direction, acceleration);
-		}
+	public void accelerateTank(float acceleration) {
+		tank.accelerate(acceleration);
 	}
 
 	public void rotateTankY(float radians) {
@@ -113,5 +111,9 @@ public class SinglePlayerGame extends SimpleApplication implements IInputHandler
 
 	public void elevateCannon(float radians) {
 		this.tank.addElevation(radians);
+	}
+
+	public void setTankAccelerating(boolean shouldAccelerate) {
+		this.tank.setAccelerating(shouldAccelerate);
 	}
 }

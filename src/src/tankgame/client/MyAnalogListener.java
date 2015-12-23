@@ -25,13 +25,9 @@ public class MyAnalogListener implements AnalogListener {
 
 	public void onAnalog(String name, float value, float tpf) {
 		if (name.equals("Forward")) {
-			game.accelerateTank(Vector3f.UNIT_Z, TANK_ACCELERATION * tpf * value);
+			game.accelerateTank(TANK_ACCELERATION * tpf * value);
 		} else if (name.equals("Backward")) {
-			game.accelerateTank(Vector3f.UNIT_Z, -TANK_ACCELERATION * tpf * value);
-		} else if (name.equals("Strafe Right")) {
-			game.accelerateTank(Vector3f.UNIT_X, -TANK_ACCELERATION * tpf * value);
-		} else if (name.equals("Strafe Left")) {
-			game.accelerateTank(Vector3f.UNIT_Z, TANK_ACCELERATION * tpf * value);
+			game.accelerateTank(-TANK_ACCELERATION * tpf * value);
 		} else if (name.equals("Turn left")) {
 			game.rotateTankY(TANK_ROTATE_SPEED * tpf * value);
 		} else if (name.equals("Turn right")) {
