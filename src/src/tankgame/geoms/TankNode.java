@@ -111,10 +111,10 @@ public class TankNode extends GeomNode {
 	 * @param rotation The rotation on radians
 	 */
 	public void setRotation(float rotation) {
-		this.rotation = rotation % (FastMath.PI * 2);
+		this.rotation = rotation % (FastMath.PI * 4);
 		//Apply changes to nodes if geams are initialized
 		if (this.hasGeoms) {
-			System.out.println("Rotation: " + this.rotation);
+			//System.out.println("Rotation: " + this.rotation);
 			this.cannonNode.setLocalRotation(new Quaternion(new float[] {0, this.rotation/2, 0}));
 		}
 	}
@@ -199,6 +199,10 @@ public class TankNode extends GeomNode {
 
 	public void setAccelerating(boolean shouldAccelerate) {
 		this.accelerating = shouldAccelerate;
+	}
+	
+	public Node getCannonNode() {
+		return this.cannonNode;
 	}
 	
 }

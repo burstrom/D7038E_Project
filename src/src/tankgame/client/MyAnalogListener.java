@@ -23,22 +23,24 @@ public class MyAnalogListener implements AnalogListener {
 	}
 
 	public void onAnalog(String name, float value, float tpf) {
+		//System.out.println("Value:" + value);
+		//System.out.println("TPF:" + tpf);
 		if (name.equals("Forward")) {
-			game.accelerateTank(TANK_ACCELERATION * tpf * value);
+			game.accelerateTank(TANK_ACCELERATION * value);
 		} else if (name.equals("Backward")) {
-			game.accelerateTank(-TANK_ACCELERATION * tpf * value);
+			game.accelerateTank(-TANK_ACCELERATION * value);
 		} else if (name.equals("Turn left")) {
-			game.rotateTankY(TANK_ROTATE_SPEED * tpf * value);
+			game.rotateTankY(TANK_ROTATE_SPEED * value);
 		} else if (name.equals("Turn right")) {
-			game.rotateTankY(-TANK_ROTATE_SPEED * tpf * value);
+			game.rotateTankY(-TANK_ROTATE_SPEED * value);
 		} else if (name.equals("Turret left")) {
-			game.rotateCannon(CANNON_ROTATE_SPEED * tpf * value);
+			game.rotateCannon(CANNON_ROTATE_SPEED * value);
 		} else if (name.equals("Turret right")) {
-			game.rotateCannon(-CANNON_ROTATE_SPEED * tpf * value);
+			game.rotateCannon(-CANNON_ROTATE_SPEED * value);
 		} else if (name.equals("Turret up")) {
-			game.elevateCannon(TURRET_ELEVATE_SPEED * tpf * value);
+			game.elevateCannon(TURRET_ELEVATE_SPEED * value);
 		} else if (name.equals("Turret down")) {
-			game.elevateCannon(-TURRET_ELEVATE_SPEED * tpf * value);
+			game.elevateCannon(-TURRET_ELEVATE_SPEED * value);
 		}
 	}
 }

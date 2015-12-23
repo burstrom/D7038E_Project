@@ -13,8 +13,10 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
+import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.CameraControl;
 import tankgame.client.KeyBindings;
 import tankgame.geoms.BulletNode;
 import tankgame.geoms.TankNode;
@@ -30,12 +32,10 @@ public class SinglePlayerGame extends SimpleApplication implements IInputHandler
 	private KeyBindings keyBindings;
 	private TankNode tank;
 	private Node allBulletsNode;
+	private CameraNode camNode;
 
 	@Override
 	public void simpleInitApp() {
-		// Move camera a bit faster
-		flyCam.setMoveSpeed(20);
-
 		// Create the players tank
 		tank = new TankNode("Tank", ColorRGBA.Blue);
 		tank.initClient(assetManager);
@@ -57,6 +57,9 @@ public class SinglePlayerGame extends SimpleApplication implements IInputHandler
 		//Init keybindings
 		keyBindings = new KeyBindings(this, inputManager);
 		keyBindings.init();
+		
+		//Init camera
+		initCamera(tank.getCannonNode());
 	}
 
 	@Override
@@ -64,6 +67,8 @@ public class SinglePlayerGame extends SimpleApplication implements IInputHandler
 		super.simpleUpdate(tpf);
 		tank.onUpdate(tpf);
 		for (Spatial child : allBulletsNode.getChildren()) {
+			BulletNode bullet = (BulletNode) child;
+			bullet.onUpdate(tpf);
 		}
 	}
 
@@ -117,4 +122,18 @@ public class SinglePlayerGame extends SimpleApplication implements IInputHandler
 	public void setTankAccelerating(boolean shouldAccelerate) {
 		this.tank.setAccelerating(shouldAccelerate);
 	}
+	
+	private void initCamera(Node target) {
+        flyCam.setEnabled(false);
+        //create the camera Node
+        camNode = new CameraNode("Camera Node", cam);
+        //This mode means that camera copies the movements of the target:
+        camNode.setControlDir(CameraControl.ControlDirection.SpatialToCamera);
+        //Attach the camNode to the target:
+        target.attachChild(camNode);
+        //Move camNode, e.g. behind and above the target:
+        camNode.setLocalTranslation(new Vector3f(0, 20, -60));
+        //Rotate the camNode to look at the target:
+        camNode.lookAt(target.getLocalTranslation(), Vector3f.UNIT_Y);
+    }
 }
