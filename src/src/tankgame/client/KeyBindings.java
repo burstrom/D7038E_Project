@@ -14,9 +14,9 @@ public class KeyBindings {
 	private MyAnalogListener analogListener;
 	private InputManager inputManager;
 	
-	public KeyBindings(IInputHandler game, InputManager inputManager) {
-		actionListener = new MyActionListener(game);
-		analogListener = new MyAnalogListener(game);
+	public KeyBindings(IInputHandler handler, InputManager inputManager) {
+		actionListener = new MyActionListener(handler);
+		analogListener = new MyAnalogListener(handler);
 		this.inputManager = inputManager;
 	}
 	
