@@ -13,24 +13,24 @@ import tankgame.geoms.BulletNode;
  */
 public class MyActionListener implements ActionListener {
 	private boolean isMoving = false;
-	private IInputHandler game;
+	private IInputHandler handler;
 	
-	public MyActionListener(IInputHandler game) {
-		this.game = game;
+	public MyActionListener(IInputHandler handler) {
+		this.handler = handler;
 	}
 
 	public void onAction(String name, boolean isPressed, float tpf) {
 		if (name.equals("Forward") || name.equals("Backward")) {
                 if (isPressed){
-                    System.out.println("Started moving");
-                    game.setTankAccelerating(true);
+                    //System.out.println("Started moving");
+                    handler.setTankAccelerating(true);
                 } else {
-                    System.out.println("Stopped moving");
-                    game.setTankAccelerating(false);
+                    //System.out.println("Stopped moving");
+                    handler.setTankAccelerating(false);
                 }
             }
             if (name.equals("Fire") && isPressed){
-				game.shootBullet();
+				handler.shootBullet();
             }
 	}
 	

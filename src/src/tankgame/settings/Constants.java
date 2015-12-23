@@ -27,11 +27,11 @@ public class Constants {
     public static final float TANK_ACCELERATION = 0.4f;
     public static final float TANK_DECELERATION = 0.2f;
     public static final float TANK_MAX_SPEED = 30f;
-    //Following are in degrees per sec.
+	
     public static final float TANK_ROTATE_SPEED = 0.7f; // In rads
     public static final float CANNON_ROTATE_SPEED = 0.7f; // In rads
     public static final float TURRET_ELEVATE_SPEED = 0.4f; // In rads
-    public static final float CANNON_MAX_ELEVATION = 0.35f; //In radians.
+    public static final float CANNON_MAX_ELEVATION = 0.35f; // In radians.
     
     //bullet constants
     public static final float BULLET_RADIUS = 0.2f;
