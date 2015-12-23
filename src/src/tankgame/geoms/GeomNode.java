@@ -19,13 +19,20 @@ public abstract class GeomNode extends Node {
 	}
 	
 	/**
-	 * Create the actual geometry under the node.
+	 * Called by the initClient method to create the geometires and child nodes.
+	 * @param assetManager The Game's Asset manager
+	 */
+	protected abstract void createGeom(AssetManager assetManager);
+	
+	/**
 	 * Called by the client, but not the server.
 	 * 
-	 * @param assetManager The Games Asset manager
+	 * @param assetManager The Game's Asset manager
 	 */
-	public void createGeom(AssetManager assetManager) {
+	public void initClient(AssetManager assetManager) {
 		this.hasGeoms = true;
-	}
+		createGeom(assetManager);
+	} 
+	
 	public abstract void onUpdate(float tpf);
 }

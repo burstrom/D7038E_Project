@@ -29,8 +29,7 @@ public class BulletNode extends GeomNode {
 	}
 
 	@Override
-	public void createGeom(AssetManager assetManager) {
-		super.createGeom(assetManager);
+	protected void createGeom(AssetManager assetManager) {
 		Sphere bulletSphere = new Sphere(
 				ROUND_THINGS_RES,
 				ROUND_THINGS_RES,

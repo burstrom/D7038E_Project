@@ -36,7 +36,7 @@ public class SinglePlayerGame extends SimpleApplication implements IInputHandler
 
 		// Create the players tank
 		tank = new TankNode("Tank", ColorRGBA.Blue);
-		tank.createGeom(assetManager);
+		tank.initClient(assetManager);
 		rootNode.attachChild(tank);
 
 		//Create node for all bullets
@@ -78,7 +78,7 @@ public class SinglePlayerGame extends SimpleApplication implements IInputHandler
 
 	public void shootBullet() {
 		BulletNode bullet = new BulletNode("Bullet", tank.getColor());
-		bullet.createGeom(assetManager);
+		bullet.initClient(assetManager);
 		allBulletsNode.attachChild(bullet);
 
 		//Rotate correctly.
@@ -88,7 +88,7 @@ public class SinglePlayerGame extends SimpleApplication implements IInputHandler
 		Vector3f barrelPos = tank.getApertureWorldTranslation();
 		bullet.setLocalTranslation(barrelPos);
 
-		System.out.println("Shot placed at: \n" + barrelPos);
+		//System.out.println("Shot placed at: \n" + barrelPos);
 	}
 	
 	/**

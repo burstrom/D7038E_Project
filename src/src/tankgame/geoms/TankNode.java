@@ -38,8 +38,7 @@ public class TankNode extends GeomNode {
 	 * @param assetManager The games AssetManager for importing assets
 	 */
 	@Override
-	public void createGeom(AssetManager assetManager) {
-		super.createGeom(assetManager);
+	protected void createGeom(AssetManager assetManager) {
 		//Import all the different tank parts
 		bodyNode = (Node) assetManager.loadModel("Models/HoverTank/TankBodyGeom.mesh.xml");
 		cannonNode = (Node) assetManager.loadModel("Models/HoverTank/TankCannonGeom.mesh.xml");
