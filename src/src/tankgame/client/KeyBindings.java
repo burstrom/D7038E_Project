@@ -3,7 +3,6 @@ package tankgame.client;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
-import tankgame.IInputHandler;
 
 /**
  *

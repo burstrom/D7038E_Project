@@ -4,6 +4,7 @@
  */
 package tankgame;
 
+import tankgame.client.IInputHandler;
 import com.jme3.app.SimpleApplication;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;

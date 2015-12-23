@@ -10,7 +10,6 @@ import static tankgame.settings.Constants.TANK_ACCELERATION;
 import static tankgame.settings.Constants.TANK_ROTATE_SPEED;
 import static tankgame.settings.Constants.TURRET_ELEVATE_SPEED;
 import static tankgame.settings.Constants.CANNON_ROTATE_SPEED;
-import tankgame.IInputHandler;
 
 /**
  *

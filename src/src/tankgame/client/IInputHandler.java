@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package tankgame;
+package tankgame.client;
 
 /**
  * Interface for the Action and Analog Listeners to hook on to

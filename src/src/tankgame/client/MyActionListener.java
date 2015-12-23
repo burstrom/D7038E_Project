@@ -5,7 +5,6 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
-import tankgame.IInputHandler;
 import tankgame.geoms.BulletNode;
 
 /**
