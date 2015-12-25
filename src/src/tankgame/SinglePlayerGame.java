@@ -19,6 +19,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.CameraControl;
 import tankgame.client.KeyBindings;
 import tankgame.geoms.BulletNode;
+import tankgame.geoms.PlayFieldNode;
 import tankgame.geoms.TankNode;
 import tankgame.settings.Constants;
 
@@ -31,11 +32,17 @@ public class SinglePlayerGame extends SimpleApplication implements IInputHandler
 
 	private KeyBindings keyBindings;
 	private TankNode tank;
+	private PlayFieldNode playField;
 	private Node allBulletsNode;
 	private CameraNode camNode;
 
 	@Override
 	public void simpleInitApp() {
+		// Create the playing field
+		playField = new PlayFieldNode("PlayField");
+		playField.initClient(assetManager);
+		rootNode.attachChild(playField);
+		
 		// Create the players tank
 		tank = new TankNode("Tank", ColorRGBA.Blue);
 		tank.initClient(assetManager);

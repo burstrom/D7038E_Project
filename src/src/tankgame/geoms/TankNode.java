@@ -28,6 +28,7 @@ public class TankNode extends GeomNode {
 	public TankNode(String name, ColorRGBA color) {
 		super(name);
 		this.color = color;
+		this.setLocalTranslation(0, 3, 0);
 	}
 	
 	/**
