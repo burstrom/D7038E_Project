@@ -25,8 +25,8 @@ public class Constants {
     public static final float TANK_BARREL_RADIUS = 1f;
     public static final float TANK_BARREL_LENGTH = 8f;
 	
-    public static final float TANK_ACCELERATION = 1f; // units/s^2
-    public static final float TANK_DECELERATION = 0.8f; // units/s^2
+    public static final float TANK_ACCELERATION = 15f; // units/s^2
+    public static final float TANK_DECELERATION = 10f; // units/s^2
     public static final float TANK_MAX_SPEED = 30f; // units/s
 	
     public static final float TANK_ROTATE_SPEED = 0.7f; // rad/s
@@ -36,5 +36,5 @@ public class Constants {
     
     //bullet constants
     public static final float BULLET_RADIUS = 0.2f;
-    public static final float BULLET_SPEED = 30f;
+    public static final float BULLET_SPEED = 50f;
 }
