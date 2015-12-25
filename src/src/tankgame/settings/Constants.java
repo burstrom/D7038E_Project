@@ -24,14 +24,15 @@ public class Constants {
     public static final float TANK_TURRET_RADIUS = 4f;
     public static final float TANK_BARREL_RADIUS = 1f;
     public static final float TANK_BARREL_LENGTH = 8f;
-    public static final float TANK_ACCELERATION = 0.4f;
-    public static final float TANK_DECELERATION = 0.2f;
-    public static final float TANK_MAX_SPEED = 30f;
 	
-    public static final float TANK_ROTATE_SPEED = 0.7f; // In rads
-    public static final float CANNON_ROTATE_SPEED = 0.7f; // In rads
-    public static final float TURRET_ELEVATE_SPEED = 0.4f; // In rads
-    public static final float CANNON_MAX_ELEVATION = 0.35f; // In radians.
+    public static final float TANK_ACCELERATION = 1f; // units/s^2
+    public static final float TANK_DECELERATION = 0.8f; // units/s^2
+    public static final float TANK_MAX_SPEED = 30f; // units/s
+	
+    public static final float TANK_ROTATE_SPEED = 0.7f; // rad/s
+    public static final float CANNON_ROTATE_SPEED = 0.7f; // rad/s
+    public static final float TURRET_ELEVATE_SPEED = 0.4f; // rad/s
+    public static final float CANNON_MAX_ELEVATION = 0.35f; // rad/s
     
     //bullet constants
     public static final float BULLET_RADIUS = 0.2f;
