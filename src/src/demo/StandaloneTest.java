@@ -5,6 +5,7 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.control.VehicleControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -89,9 +90,9 @@ public class StandaloneTest extends SimpleApplication {
         CompoundCollisionShape compoundShape = new CompoundCollisionShape();
         BoxCollisionShape box = new BoxCollisionShape(
                 new Vector3f(TANK_BODY_WIDTH, TANK_BODY_HEIGHT, TANK_BODY_LENGTH));
-        compoundShape.addChildShape(box, new Vector3f(0,0,0));
+        compoundShape.addChildShape(box, new Vector3f(0,TANK_MASS_OFFSET,0));
         SphereCollisionShape sphere = new SphereCollisionShape(TANK_TURRET_RADIUS);
-        compoundShape.addChildShape(sphere, new Vector3f(0, TANK_TURRET_RADIUS, 0));
+        compoundShape.addChildShape(sphere, new Vector3f(0, TANK_TURRET_RADIUS+TANK_MASS_OFFSET, 0));
         
         vehicle = new VehicleControl(compoundShape, 1000);
         tankNode.addControl(vehicle);
@@ -108,7 +109,7 @@ public class StandaloneTest extends SimpleApplication {
         Vector3f wheelAxle = new Vector3f(-1, 0, 0);
         float radius = 0.5f;
         float restLength = 0.3f;
-        float yOff = -TANK_BODY_HEIGHT;
+        float yOff = -TANK_BODY_HEIGHT+TANK_MASS_OFFSET;
         float xOff = TANK_BODY_WIDTH*0.9f;
         float zOff = TANK_BODY_LENGTH*0.9f;
         Cylinder wheelMesh = new Cylinder(16, 16, radius, radius * 0.6f, true);
@@ -159,6 +160,9 @@ public class StandaloneTest extends SimpleApplication {
         tankNode.attachChild(node4);
         //END COPYPASTA CODE
         
+        vehicle.setGravity(new Vector3f(0f,-9.81f,0f));
+        vehicle.setCcdMotionThreshold(TANK_BODY_HEIGHT);
+        
         return vehicle;
     }
     
@@ -168,6 +172,7 @@ public class StandaloneTest extends SimpleApplication {
         //since the turret is actually a sphere lodged inside the tank
         //The whole shebang will be controllable.
         
+        //Create body of tank.
         Node tankNode = new Node("Tank node");
         Box bodyGeom = new Box(TANK_BODY_WIDTH,TANK_BODY_HEIGHT,TANK_BODY_LENGTH);
         Geometry body = new Geometry("Tank body", bodyGeom);
@@ -175,13 +180,17 @@ public class StandaloneTest extends SimpleApplication {
                 "Common/MatDefs/Misc/Unshaded.j3md");
         mat1.setColor("Color", ColorRGBA.Blue);
         body.setMaterial(mat1);
+        //Move geom down to match offset
+        body.setLocalTranslation(0,TANK_MASS_OFFSET,0);
         
         tankNode.attachChild(body);
         
+        //Create turret nodes.
         Node turretRotationalNode = new Node("Turret rotation node");
         Node turretElevationNode = new Node("Turret elevation node");
         Node turretAperture = new Node("Turret aperture");
         
+        //Create turret sphere
         Sphere turretSphere = new Sphere(ROUND_THINGS_RES, 
                 ROUND_THINGS_RES, TANK_TURRET_RADIUS);
         Geometry turret = new Geometry("Tank turret", turretSphere);
@@ -189,15 +198,20 @@ public class StandaloneTest extends SimpleApplication {
                 "Common/MatDefs/Misc/Unshaded.j3md");
         mat2.setColor("Color", ColorRGBA.Yellow);
         turret.setMaterial(mat2);
+        turret.setLocalTranslation(0,TANK_MASS_OFFSET,0);
+        
         tankNode.attachChild(turretRotationalNode);
         
+        //Attach turret nodes
         turretRotationalNode.attachChild(turretElevationNode);
         turretElevationNode.attachChild(turretAperture);
         turretElevationNode.attachChild(turret);
         
+        //Move turret nodes.
         turretRotationalNode.setLocalTranslation(new Vector3f(0,TANK_BODY_HEIGHT+TANK_BARREL_RADIUS,0));
-        turretAperture.setLocalTranslation(0,TANK_BARREL_LENGTH/2-BULLET_RADIUS, 0);
+        turretAperture.setLocalTranslation(0,0,2f*TANK_BARREL_LENGTH-BULLET_RADIUS-TANK_BARREL_RADIUS);
         
+        //Make turret barrel cylinder
         Cylinder barrelCyl = new Cylinder(ROUND_THINGS_RES,
                 ROUND_THINGS_RES,TANK_BARREL_RADIUS,TANK_BARREL_LENGTH,
                 true);
@@ -206,9 +220,10 @@ public class StandaloneTest extends SimpleApplication {
                 "Common/MatDefs/Misc/Unshaded.j3md");
         mat3.setColor("Color", ColorRGBA.Green);
         barrel.setMaterial(mat3);
+        barrel.setLocalTranslation(0,TANK_MASS_OFFSET,0);
         turretElevationNode.attachChild(barrel);
         //barrel.rotate(90*FastMath.DEG_TO_RAD,0,0);
-        barrel.move(0, 0, TANK_BARREL_LENGTH/2f+TANK_TURRET_RADIUS-0.1f);
+        barrel.move(0, 0, TANK_BARREL_LENGTH+TANK_TURRET_RADIUS-TANK_BARREL_RADIUS);
         
         return tankNode;
     }
@@ -230,7 +245,7 @@ public class StandaloneTest extends SimpleApplication {
     public Node createBullet(ColorRGBA color){
         Sphere bulletSphere = new Sphere(ROUND_THINGS_RES, 
                 ROUND_THINGS_RES, BULLET_RADIUS);
-        Geometry bullet = new Geometry("Bullet", bulletSphere);
+        Geometry bullet = new Geometry("Bullet geometry", bulletSphere);
         /*
         Material stone = new Material(assetManager,
                 "Common/MatDefs/Light/Lighting.j3md");
@@ -252,6 +267,16 @@ public class StandaloneTest extends SimpleApplication {
         bulletNode.setUserData("Gravity force", 0f);
         bulletNode.attachChild(bullet);
         return bulletNode;
+    }
+    
+    private RigidBodyControl attachBulletPhysics(Node bulletNode) {
+        ((Geometry) bulletNode.getChild("Bullet geometry")).addControl(
+                new RigidBodyControl(BULLET_MASS));
+        RigidBodyControl control = ((Geometry) bulletNode.getChild("Bullet geometry")).
+                getControl(RigidBodyControl.class);
+        control.setGravity(new Vector3f(0f,9.81f,0f));
+        control.setCcdMotionThreshold(BULLET_RADIUS);
+        return control;
     }
     
     private void moveForwardZ(Spatial element, float speed, float tpf ) {
@@ -292,10 +317,10 @@ public class StandaloneTest extends SimpleApplication {
         //inputManager.addListener(actionListener, "Toggle laser", "Shoot","Restart");
         inputManager.addListener(actionListener,"Forward", "Backward", 
                 "Turn left", "Turn right", "Turret left", "Turret right", 
-                "Turret up", "Turret down");
+                "Turret up", "Turret down", "Fire");
         inputManager.addListener(analogListener,"Forward", "Backward", 
                 "Turn left", "Turn right", "Turret left", "Turret right", 
-                "Turret up", "Turret down");
+                "Turret up", "Turret down", "Fire");
   };
     
     private void initCamera(Node target) {
@@ -355,7 +380,7 @@ public class StandaloneTest extends SimpleApplication {
         bulletAppState.getPhysicsSpace().enableDebug(assetManager);
         
         tank = createTank(ColorRGBA.Blue);
-        tank.setLocalTranslation(0,3.5f,0);
+        tank.setLocalTranslation(0,6.5f,0);
         VehicleControl vehicle = attachTankPhysics(tank);
         bulletAppState.getPhysicsSpace().add(vehicle);
         
@@ -384,7 +409,7 @@ public class StandaloneTest extends SimpleApplication {
             }
         }
         moveForwardZ(tank, speed, tpf);
-        */
+        
         
         List<Spatial> bullets = allBullets.getChildren();
         
@@ -405,7 +430,7 @@ public class StandaloneTest extends SimpleApplication {
                 }
             }
         }
-        
+        */
     }
 
     @Override
@@ -452,8 +477,20 @@ public class StandaloneTest extends SimpleApplication {
                 }
             }
             if (name.equals("Fire") && keyPressed){
+                Node bulletNode = createBullet(ColorRGBA.White);
+                RigidBodyControl bulletControl = attachBulletPhysics(bulletNode);
+                allBullets.attachChild(bulletNode);
+                bulletAppState.getPhysicsSpace().add(bulletControl);
+                Vector3f turretMuzzle = tank.getChild("Turret aperture").getWorldTranslation();
+                //Quaternion turretRot = tank.getChild("Turret elevation node").getLocalRotation();
+                //Vector3f launchDirection = new Vector3f(1,1,1);
+                //turretRot.mult(launchDirection);
+                Vector3f turretBase = tank.getChild("Turret rotation node").getWorldTranslation();
+                Vector3f launchDirection = turretMuzzle.subtract(turretBase);
                 
+                bulletControl.setPhysicsLocation(turretMuzzle);
                 
+                bulletControl.applyImpulse(launchDirection.mult(30f), turretMuzzle);
             }
         }
     };
@@ -496,88 +533,5 @@ public class StandaloneTest extends SimpleApplication {
             }
         }
     };
-    
-    
-/*
-    private ActionListener actionListener = new ActionListener() {
-        public void onAction(String name, boolean keyPressed, float tpf) {
-            if (name.equals("Forward")) {
-                if (keyPressed){
-                    System.out.println("Started moving forward.");
-                    isMoving = true;
-                } else {
-                    System.out.println("Stopped moving forward.");
-                    isMoving = false;
-                }
-            }
-            if (name.equals("Backward")) {
-                if (keyPressed){
-                    System.out.println("Started moving backward.");
-                    isMoving = true;
-                } else {
-                    System.out.println("Stopped moving backward.");
-                    isMoving = false;
-                }
-            }
-            if (name.equals("Fire") && keyPressed){
-                
-                Node bullet = createBullet(ColorRGBA.White);
-                allBullets.attachChild(bullet);
-                
-                //Rotate correctly.
-                Node turret = (Node)tank.getChild("Turret elevation node");
-                Quaternion launchrotation = turret.getWorldRotation();
-                bullet.rotate(launchrotation);
-                
-                Vector3f barrelPos = tank.getChild("Turret aperture").getWorldTranslation();
-                bullet.setLocalTranslation(barrelPos);
-                
-            }
-        }
-    };
-
-    private AnalogListener analogListener = new AnalogListener() {
-        public void onAnalog(String name, float value, float tpf) {
-            if (name.equals("Forward")) {
-                if (speed <= TANK_MAX_SPEED){
-                    speed += TANK_ACCELERATION*tpf;
-                }
-            }
-            else if (name.equals("Backward")) {
-                if (speed >= -TANK_MAX_SPEED){
-                    speed -= TANK_ACCELERATION*tpf;
-                }
-            }
-            else if (name.equals("Turn left")) {
-                tank.rotate(0, FastMath.DEG_TO_RAD*TANK_ROTATE_SPEED*tpf, 0);
-            }
-            else if (name.equals("Turn right")) {
-                tank.rotate(0, -FastMath.DEG_TO_RAD*TANK_ROTATE_SPEED*tpf, 0);
-            }
-            else if (name.equals("Turret left")) {
-                tank.getChild("Turret rotation node").rotate(
-                        0f,FastMath.DEG_TO_RAD*TURRET_ROTATE_SPEED*tpf,0f);
-            }
-            else if (name.equals("Turret right")) {
-                tank.getChild("Turret rotation node").rotate(
-                        0f,-FastMath.DEG_TO_RAD*TURRET_ROTATE_SPEED*tpf,0f);
-            }
-            else if (name.equals("Turret up")) {
-                if (turretAngle <= TURRET_MAX_ELEVATION*FastMath.DEG_TO_RAD) {
-                    turretAngle += FastMath.DEG_TO_RAD*TURRET_ELEVATE_SPEED*tpf;
-                    tank.getChild("Turret elevation node").rotate(
-                        -FastMath.DEG_TO_RAD*TURRET_ELEVATE_SPEED*tpf,0,0);
-                }
-            }
-            else if (name.equals("Turret down")) {
-                if (turretAngle >= 0) {
-                    turretAngle -= FastMath.DEG_TO_RAD*TURRET_ELEVATE_SPEED*tpf;
-                    tank.getChild("Turret elevation node").rotate(
-                        FastMath.DEG_TO_RAD*TURRET_ELEVATE_SPEED*tpf,0,0);
-                }
-            }
-        }
-    };
-*/  
-    
+ 
 }
