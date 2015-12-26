@@ -40,7 +40,7 @@ public class SinglePlayerGame extends SimpleApplication implements IInputHandler
 		playField = new PlayFieldNode("PlayField");
 		playField.initClient(assetManager);
 		rootNode.attachChild(playField);
-		
+
 		// Create the players tank
 		tank = new TankNode("Tank", ColorRGBA.Blue);
 		tank.initClient(assetManager);
@@ -62,7 +62,7 @@ public class SinglePlayerGame extends SimpleApplication implements IInputHandler
 		//Init keybindings
 		keyBindings = new KeyBindings(this, inputManager);
 		keyBindings.init();
-		
+
 		//Init camera
 		initCamera(tank.getCannonNode());
 	}
@@ -88,9 +88,11 @@ public class SinglePlayerGame extends SimpleApplication implements IInputHandler
 	}
 
 	public void shootBullet() {
-		CannonBallNode bullet = tank.shootBullet();
-		bullet.initClient(assetManager);
-		allBulletsNode.attachChild(bullet);
+		CannonBallNode bullet = tank.shootBullet(this.getTimer().getTimeInSeconds());
+		if (bullet != null) {
+			bullet.initClient(assetManager);
+			allBulletsNode.attachChild(bullet);
+		}
 	}
 
 	/**
@@ -118,18 +120,18 @@ public class SinglePlayerGame extends SimpleApplication implements IInputHandler
 	public void setTankAccelerating(boolean shouldAccelerate) {
 		this.tank.setAccelerating(shouldAccelerate);
 	}
-	
+
 	private void initCamera(Node target) {
-        flyCam.setEnabled(false);
-        //create the camera Node
-        camNode = new CameraNode("Camera Node", cam);
-        //This mode means that camera copies the movements of the target:
-        camNode.setControlDir(CameraControl.ControlDirection.SpatialToCamera);
-        //Attach the camNode to the target:
-        target.attachChild(camNode);
-        //Move camNode, e.g. behind and above the target:
-        camNode.setLocalTranslation(new Vector3f(0, 10, -40));
-        //Rotate the camNode to look at the target:
-        camNode.lookAt(target.getLocalTranslation(), Vector3f.UNIT_Y);
-    }
+		flyCam.setEnabled(false);
+		//create the camera Node
+		camNode = new CameraNode("Camera Node", cam);
+		//This mode means that camera copies the movements of the target:
+		camNode.setControlDir(CameraControl.ControlDirection.SpatialToCamera);
+		//Attach the camNode to the target:
+		target.attachChild(camNode);
+		//Move camNode, e.g. behind and above the target:
+		camNode.setLocalTranslation(new Vector3f(0, 10, -40));
+		//Rotate the camNode to look at the target:
+		camNode.lookAt(target.getLocalTranslation(), Vector3f.UNIT_Y);
+	}
 }
