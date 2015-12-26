@@ -20,7 +20,7 @@ import tankgame.util.Movement;
  *
  * @author MrIngelborn
  */
-public class BulletNode extends GeomNode {
+public class CannonBallNode extends GeomNode {
 	private ColorRGBA color;
 	private float gravityVelocity;
 	private Vector3f ownerVelocity;
@@ -31,7 +31,7 @@ public class BulletNode extends GeomNode {
 	 * @param color Color overlay on the tank
 	 * @param ownerVelocity The owner's velocity
 	 */
-	public BulletNode(String name, ColorRGBA color, Vector3f ownerVelocity) {
+	public CannonBallNode(String name, ColorRGBA color, Vector3f ownerVelocity) {
 		super(name);
 		this.color = color;
 		gravityVelocity = 0;

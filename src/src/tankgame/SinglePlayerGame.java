@@ -17,7 +17,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.CameraControl;
 import tankgame.client.KeyBindings;
-import tankgame.geoms.BulletNode;
+import tankgame.geoms.CannonBallNode;
 import tankgame.geoms.PlayFieldNode;
 import tankgame.geoms.TankNode;
 
@@ -72,7 +72,7 @@ public class SinglePlayerGame extends SimpleApplication implements IInputHandler
 		super.simpleUpdate(tpf);
 		tank.onUpdate(tpf);
 		for (Spatial child : allBulletsNode.getChildren()) {
-			BulletNode bullet = (BulletNode) child;
+			CannonBallNode bullet = (CannonBallNode) child;
 			bullet.onUpdate(tpf);
 		}
 	}
@@ -88,22 +88,9 @@ public class SinglePlayerGame extends SimpleApplication implements IInputHandler
 	}
 
 	public void shootBullet() {
-		// Get tank's velocity
-		Vector3f tankVelocity = tank.getLocalRotation().getRotationColumn(2).mult(tank.getSpeed());
-		
-		// Create a new bullet
-		BulletNode bullet = new BulletNode("Bullet", tank.getColor(), tankVelocity);
+		CannonBallNode bullet = tank.shootBullet();
 		bullet.initClient(assetManager);
 		allBulletsNode.attachChild(bullet);
-		
-		// Rotate the cannonBall correctly
-		Quaternion launchrotation = tank.getBarrelWorldDirection();
-		bullet.rotate(launchrotation);
-
-		Vector3f barrelPos = tank.getApertureWorldTranslation();
-		bullet.setLocalTranslation(barrelPos);
-
-		//System.out.println("Shot placed at: \n" + barrelPos);
 	}
 
 	/**

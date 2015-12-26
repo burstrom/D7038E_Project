@@ -137,14 +137,6 @@ public class TankNode extends GeomNode {
 		return this.rotation;
 	}
 
-	public Quaternion getBarrelWorldDirection() {
-		return cannonBarrelNode.getWorldRotation();
-	}
-
-	public Vector3f getApertureWorldTranslation() {
-		return apertureNode.getWorldTranslation();
-	}
-
 	public ColorRGBA getColor() {
 		return this.color;
 	}
@@ -204,6 +196,20 @@ public class TankNode extends GeomNode {
 	
 	public Node getCannonNode() {
 		return this.cannonNode;
+	}
+	
+	public CannonBallNode shootBullet() {
+		// Get this tank's velocity
+		Vector3f tankVelocity = this.getLocalRotation().getRotationColumn(2).mult(speed);
+		
+		// Create a new bullet
+		CannonBallNode bullet = new CannonBallNode("Bullet", this.color, tankVelocity);
+		
+		// Rotate and place the cannon ball
+		bullet.rotate(cannonBarrelNode.getWorldRotation());
+		bullet.setLocalTranslation(apertureNode.getWorldTranslation());
+		
+		return bullet;
 	}
 	
 }
