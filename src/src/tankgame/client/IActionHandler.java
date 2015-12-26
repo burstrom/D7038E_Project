@@ -7,6 +7,7 @@ package tankgame.client;
 /**
  * Interface for handling changes in the game. 
  * The Action and Analog Listeners hook on to this.
+ * 
  * @author MrIngelborn
  */
 public interface IActionHandler {
