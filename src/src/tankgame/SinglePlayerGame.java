@@ -90,12 +90,19 @@ public class SinglePlayerGame extends SimpleApplication implements IInputHandler
 	}
 
 	public void shootBullet() {
-		BulletNode bullet = new BulletNode("Bullet", tank.getColor());
+		// Get the cannon's rotation
+		Quaternion launchrotation = tank.getBarrelWorldDirection();
+		
+		// Get tank's velocity
+		Vector3f tankVelocity = tank.getLocalRotation().getRotationColumn(2).mult(tank.getSpeed());
+		System.out.println(tankVelocity);
+		
+		// Create a new bullet
+		BulletNode bullet = new BulletNode("Bullet", tank.getColor(), tankVelocity);
 		bullet.initClient(assetManager);
 		allBulletsNode.attachChild(bullet);
 
 		//Rotate correctly.
-		Quaternion launchrotation = tank.getBarrelWorldDirection();
 		bullet.rotate(launchrotation);
 
 		Vector3f barrelPos = tank.getApertureWorldTranslation();
