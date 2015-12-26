@@ -15,9 +15,9 @@ import static tankgame.settings.Constants.CANNON_ROTATE_SPEED;
  * @author MrIngelborn
  */
 public class MyAnalogListener implements AnalogListener {
-	IInputHandler handler;
+	IActionHandler handler;
 
-	public MyAnalogListener(IInputHandler handler) {
+	public MyAnalogListener(IActionHandler handler) {
 		this.handler = handler;
 	}
 

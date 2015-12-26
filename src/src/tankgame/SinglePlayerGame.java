@@ -4,7 +4,7 @@
  */
 package tankgame;
 
-import tankgame.client.IInputHandler;
+import tankgame.client.IActionHandler;
 import com.jme3.app.SimpleApplication;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
@@ -25,7 +25,7 @@ import tankgame.geoms.TankNode;
  *
  * @author MrIngelborn
  */
-public class SinglePlayerGame extends SimpleApplication implements IInputHandler {
+public class SinglePlayerGame extends SimpleApplication implements IActionHandler {
 
 	private KeyBindings keyBindings;
 	private TankNode tank;

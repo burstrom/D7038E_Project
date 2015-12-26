@@ -5,10 +5,11 @@
 package tankgame.client;
 
 /**
- * Interface for the Action and Analog Listeners to hook on to
+ * Interface for handling changes in the game. 
+ * The Action and Analog Listeners hook on to this.
  * @author MrIngelborn
  */
-public interface IInputHandler {
+public interface IActionHandler {
 
 	public void accelerateTank(float acceleraton);
 

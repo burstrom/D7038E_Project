@@ -7,7 +7,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
-import tankgame.client.IInputHandler;
+import tankgame.client.IActionHandler;
 import tankgame.settings.Constants;
 import tankgame.util.MovementHelper;
 
@@ -18,7 +18,7 @@ import tankgame.util.MovementHelper;
  */
 public class TankNode extends GeomNode {
 
-	private IInputHandler inputHandler;
+	private IActionHandler inputHandler;
 	private ColorRGBA color;
 	private float rotation = 0, elevation = 0, speed = 0;
 	private Node bodyNode, cannonNode, cannonLinkNode, cannonBarrelNode, engineNode, apertureNode;
@@ -31,7 +31,7 @@ public class TankNode extends GeomNode {
 	 * @param name Name of the Node
 	 * @param color THe color of the tank
 	 */
-	public TankNode(String name, ColorRGBA color, IInputHandler inputHandler) {
+	public TankNode(String name, ColorRGBA color, IActionHandler inputHandler) {
 		super(name);
 		this.color = color;
 		this.setLocalTranslation(0, 2, 0);

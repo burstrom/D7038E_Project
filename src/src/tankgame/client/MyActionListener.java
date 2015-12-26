@@ -8,9 +8,9 @@ import com.jme3.input.controls.ActionListener;
  */
 public class MyActionListener implements ActionListener {
 	private boolean forwardPressed = false, backwardPressed = false;
-	private IInputHandler handler;
+	private IActionHandler handler;
 
-	public MyActionListener(IInputHandler handler) {
+	public MyActionListener(IActionHandler handler) {
 		this.handler = handler;
 	}
 

@@ -13,7 +13,7 @@ public class KeyBindings {
 	private MyAnalogListener analogListener;
 	private InputManager inputManager;
 	
-	public KeyBindings(IInputHandler handler, InputManager inputManager) {
+	public KeyBindings(IActionHandler handler, InputManager inputManager) {
 		actionListener = new MyActionListener(handler);
 		analogListener = new MyAnalogListener(handler);
 		this.inputManager = inputManager;
