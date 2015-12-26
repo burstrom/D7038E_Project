@@ -17,6 +17,7 @@ import tankgame.util.Movement;
  * @author MrIngelborn
  */
 public class TankNode extends GeomNode {
+
 	private IInputHandler inputHandler;
 	private ColorRGBA color;
 	private float rotation = 0, elevation = 0, speed = 0;
@@ -91,15 +92,17 @@ public class TankNode extends GeomNode {
 	 * @param tpf Time since last frame
 	 */
 	public void onUpdate(float tpf) {
-		// Animate the engine
-		this.engineNode.rotate(0, tpf * 20, 0);
-		
-		// Animate the tank to move up and down
-		this.bodySinX += tpf * 2;
-		this.bodySinX %= Math.PI * 2;
-		float bodySinY = (float) Math.sin(this.bodySinX) / 8;
-		this.bodyNode.setLocalTranslation(0, bodySinY, 0);
-		
+		// If on the client side and geoms has been initialized
+		if (this.hasGeoms) {
+			// Animate the engine
+			this.engineNode.rotate(0, tpf * 20, 0);
+
+			// Animate the tank to move up and down
+			this.bodySinX += tpf * 2;
+			this.bodySinX %= Math.PI * 2;
+			float bodySinY = (float) Math.sin(this.bodySinX) / 8;
+			this.bodyNode.setLocalTranslation(0, bodySinY, 0);
+		}
 		//Deaccelerate if not button is pressed to move
 		if (!accelerating) {
 			if (speed > 0) {
@@ -116,9 +119,11 @@ public class TankNode extends GeomNode {
 		if (speed != 0) {
 			Movement.moveForwardZ(this, speed, tpf);
 		}
-		
+
 		// Try to shoot a cannon ball if should be shooting
-		if (isShooting) inputHandler.shootCannonBall();	
+		if (isShooting) {
+			inputHandler.shootCannonBall();
+		}
 	}
 
 	/**
@@ -219,8 +224,9 @@ public class TankNode extends GeomNode {
 	}
 
 	/**
-	 * Creates a new bullet at the aperture of the tank's cannon.
-	 * Should only be called by an IInputHandler
+	 * Creates a new bullet at the aperture of the tank's cannon. Should only be
+	 * called by an IInputHandler
+	 *
 	 * @param currentTimeInSeconds The current time of the timer
 	 * @return The newly created bullet, or null if no bullet was created
 	 */
@@ -237,14 +243,15 @@ public class TankNode extends GeomNode {
 			bullet.rotate(cannonBarrelNode.getWorldRotation());
 			bullet.setLocalTranslation(apertureNode.getWorldTranslation());
 			this.lastBulletTime = currentTimeInSeconds;
-			
+
 			return bullet;
 		}
 		return null;
 	}
-	
+
 	/**
-	 * Set the tank to be shooting or not. 
+	 * Set the tank to be shooting or not.
+	 *
 	 * @param shooting True if the tank should be shooting
 	 */
 	public void setShooting(boolean shooting) {

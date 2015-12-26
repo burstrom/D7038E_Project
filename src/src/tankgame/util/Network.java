@@ -7,8 +7,6 @@ package tankgame.util;
 import com.jme3.network.AbstractMessage;
 import com.jme3.network.serializing.Serializable;
 import com.jme3.network.serializing.Serializer;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Example of networking with SpiderMonkey and threads in 
@@ -16,16 +14,16 @@ import java.util.Map;
  * 
  * @author hj
  */
-public class Util {
+public class Network {
 
     /*
      * The constants below work for me at home but must be changed in order
      * to work elsewhere.
      */
-    public static final int portNumber = 6003;
-    public static final String host2 = "localhost";
-    public static final String host1 = "localhost"; 
-    public static final String hostName = host2;
+    public static final int PORT_NUMBER = 6003;
+    public static final String HOST_2 = "localhost";
+    public static final String HOST_1 = "localhost"; 
+    public static final String HOSTNAME = HOST_2;
     
     /*
      * Constans below is added for the specific Operationtypes

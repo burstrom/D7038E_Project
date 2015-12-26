@@ -1,7 +1,7 @@
 package tankgame;
 
 
-import tankgame.util.Util;
+import tankgame.util.Network;
 import com.jme3.app.SimpleApplication;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Message;
@@ -54,7 +54,7 @@ public class GameServer extends GameCommon {
         /*
          * Make sure all messages are serialized so we can use them.
          */
-        Util.initialiseSerializables();
+        Network.initialiseSerializables();
 
         GameServer app = new GameServer();
         /*
@@ -97,7 +97,7 @@ public class GameServer extends GameCommon {
             /*
              * Create the actual server object.
              */
-            server = Network.createServer(Util.portNumber);
+            server = Network.createServer(Network.PORT_NUMBER);
             server.start();
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -166,8 +166,8 @@ public class GameServer extends GameCommon {
          */
         public void messageReceived(HostedConnection source, Message m) {
 
-            if (m instanceof Util.NetworkMessage) {
-                Util.NetworkMessage message = (Util.NetworkMessage) m;
+            if (m instanceof Network.NetworkMessage) {
+                Network.NetworkMessage message = (Network.NetworkMessage) m;
                 /* 
                  * The only thing we do is to print the message string 
                  * contained in the message object.
@@ -242,7 +242,7 @@ public class GameServer extends GameCommon {
                     /*
                      * Send a message to all clients (do a "broadcast"). 
                      */
-                    server.broadcast(new Util.NetworkMessage(Util.NOPMessage,m));
+                    server.broadcast(new Network.NetworkMessage(Network.NOPMessage,m));
                     /*
                      * A Callable have to return something so I choose to 
                      * return a boolean, but anything works. Here the result 
@@ -319,7 +319,7 @@ public class GameServer extends GameCommon {
                 /*
                  * Send to all clients. 
                  */
-                server.broadcast(new Util.NetworkMessage(Util.NOPBroadcast,m));
+                server.broadcast(new Network.NetworkMessage(Network.NOPBroadcast,m));
                 try {
                     /*
                      * Take a nap between SLEEP_MIN and SLEEP_MIN+SLEEP_EXTRA
