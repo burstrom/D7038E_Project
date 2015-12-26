@@ -22,6 +22,7 @@ public class TankNode extends GeomNode {
 	private Node bodyNode, cannonNode, cannonLinkNode, cannonBarrelNode, engineNode, apertureNode;
 	private boolean accelerating = false;
 	private float lastBulletTime = 0;
+	private float bodySinX = 0;
 
 	/**
 	 * @param name Name of the Node
@@ -30,7 +31,7 @@ public class TankNode extends GeomNode {
 	public TankNode(String name, ColorRGBA color) {
 		super(name);
 		this.color = color;
-		this.setLocalTranslation(0, 3, 0);
+		this.setLocalTranslation(0, 2, 0);
 	}
 
 	/**
@@ -87,9 +88,16 @@ public class TankNode extends GeomNode {
 	 * @param tpf Time since last frame
 	 */
 	public void onUpdate(float tpf) {
+		// Animate the engine
 		this.engineNode.rotate(0, tpf * 20, 0);
-
-		//Deaccelerate if not accelerating
+		
+		// Animate the tank to move up and down
+		this.bodySinX += tpf * 2;
+		this.bodySinX %= Math.PI * 2;
+		float bodySinY = (float) Math.sin(this.bodySinX) / 8;
+		this.bodyNode.setLocalTranslation(0, bodySinY, 0);
+		
+		//Deaccelerate if not button is pressed to move
 		if (!accelerating) {
 			if (speed > 0) {
 				// Make sure the speed don't make it to the other way of the zero
