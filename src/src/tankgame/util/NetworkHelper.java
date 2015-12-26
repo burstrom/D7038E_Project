@@ -14,7 +14,7 @@ import com.jme3.network.serializing.Serializer;
  * 
  * @author hj
  */
-public class Network {
+public class NetworkHelper {
 
     /*
      * The constants below work for me at home but must be changed in order

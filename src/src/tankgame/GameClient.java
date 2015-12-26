@@ -1,6 +1,6 @@
 package tankgame;
 
-import tankgame.util.Network;
+import tankgame.util.NetworkHelper;
 import com.jme3.app.SimpleApplication;
 import com.jme3.network.Client;
 import com.jme3.network.Message;
@@ -10,7 +10,7 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import tankgame.util.Network.NetworkMessage;
+import tankgame.util.NetworkHelper.NetworkMessage;
 
 /**
  * Example of networking with SpiderMonkey and threads in jMonkeyEngeine (Java).
@@ -41,7 +41,7 @@ public class GameClient extends GameCommon {
         /*
          * Make sure all messages are serialized so we can use them.
          */
-        Network.initialiseSerializables();
+        NetworkHelper.initialiseSerializables();
 
         GameClient app = new GameClient();
         app.start();
@@ -54,7 +54,7 @@ public class GameClient extends GameCommon {
              * Open up a connection to the server. Note how the IP address 
              * and port number is taken from the class Util. 
              */
-            client = Network.connectToServer(Network.HOSTNAME, Network.PORT_NUMBER);
+            client = Network.connectToServer(NetworkHelper.HOSTNAME, NetworkHelper.PORT_NUMBER);
             client.start();
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -115,7 +115,7 @@ public class GameClient extends GameCommon {
                 /*
                  * Respond (acknowledge) back to the server. 
                  */
-                client.send(new NetworkMessage(Network.NOPMessage,message.getMessage() + " ID "+client.getId() +" ACK"));
+                client.send(new NetworkMessage(NetworkHelper.NOPMessage,message.getMessage() + " ID "+client.getId() +" ACK"));
             }
         }
     }
