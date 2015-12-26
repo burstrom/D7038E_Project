@@ -13,7 +13,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Sphere;
 import tankgame.settings.Constants;
 import static tankgame.settings.Constants.BULLET_RADIUS;
-import static tankgame.settings.Constants.ROUND_THINGS_RES;
+import static tankgame.settings.Constants.BULLET_RES;
 import tankgame.util.Movement;
 
 /**
@@ -41,8 +41,8 @@ public class BulletNode extends GeomNode {
 	@Override
 	protected void createGeom(AssetManager assetManager) {
 		Sphere bulletSphere = new Sphere(
-				ROUND_THINGS_RES,
-				ROUND_THINGS_RES,
+				BULLET_RES,
+				BULLET_RES,
 				BULLET_RADIUS);
 		Geometry bullet = new Geometry("Bullet", bulletSphere);
 

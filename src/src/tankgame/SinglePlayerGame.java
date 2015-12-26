@@ -9,7 +9,6 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
@@ -21,7 +20,6 @@ import tankgame.client.KeyBindings;
 import tankgame.geoms.BulletNode;
 import tankgame.geoms.PlayFieldNode;
 import tankgame.geoms.TankNode;
-import tankgame.settings.Constants;
 
 /**
  * Single player game without network communication
@@ -90,9 +88,6 @@ public class SinglePlayerGame extends SimpleApplication implements IInputHandler
 	}
 
 	public void shootBullet() {
-		// Get the cannon's rotation
-		Quaternion launchrotation = tank.getBarrelWorldDirection();
-		
 		// Get tank's velocity
 		Vector3f tankVelocity = tank.getLocalRotation().getRotationColumn(2).mult(tank.getSpeed());
 		
@@ -100,8 +95,9 @@ public class SinglePlayerGame extends SimpleApplication implements IInputHandler
 		BulletNode bullet = new BulletNode("Bullet", tank.getColor(), tankVelocity);
 		bullet.initClient(assetManager);
 		allBulletsNode.attachChild(bullet);
-
-		//Rotate correctly.
+		
+		// Rotate the cannonBall correctly
+		Quaternion launchrotation = tank.getBarrelWorldDirection();
 		bullet.rotate(launchrotation);
 
 		Vector3f barrelPos = tank.getApertureWorldTranslation();
@@ -145,7 +141,7 @@ public class SinglePlayerGame extends SimpleApplication implements IInputHandler
         //Attach the camNode to the target:
         target.attachChild(camNode);
         //Move camNode, e.g. behind and above the target:
-        camNode.setLocalTranslation(new Vector3f(0, 20, -60));
+        camNode.setLocalTranslation(new Vector3f(0, 10, -40));
         //Rotate the camNode to look at the target:
         camNode.lookAt(target.getLocalTranslation(), Vector3f.UNIT_Y);
     }

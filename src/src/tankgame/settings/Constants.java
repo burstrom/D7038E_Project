@@ -11,7 +11,7 @@ package tankgame.settings;
 public class Constants {
 	//General constants.
     public static final int MAX_PLAYERS = 8;
-    public static final int ROUND_THINGS_RES = 100;
+    public static final int BULLET_RES = 50;
     
     //Environment constants
     public static final float PLAYINGFIELD_SIDE = 600f;
@@ -36,5 +36,5 @@ public class Constants {
     
     //bullet constants
     public static final float BULLET_RADIUS = 0.2f;
-    public static final float BULLET_SPEED = 50f;
+    public static final float BULLET_SPEED = 60f;
 }
