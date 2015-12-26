@@ -33,5 +33,11 @@ public class MyActionListener implements ActionListener {
 		else if (name.equals("Fire")) {
 			handler.setShooting(isPressed);
 		}
+		else if (name.startsWith("SetZoom")) {
+			int zoomLevel = Character.digit(name.charAt(name.length()-1), 10);
+			System.out.println("Name: " + name);
+			System.out.println("zoom: " + zoomLevel);
+			handler.setZoom(zoomLevel);
+		}
 	}
 }

@@ -25,5 +25,7 @@ public interface IActionHandler {
 	public void setShooting(boolean shooting);
 	
 	public void shootCannonBall();
+
+	public void setZoom(int zoomLevel);
 	
 }

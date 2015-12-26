@@ -20,12 +20,6 @@ public class KeyBindings {
 	}
 	
 	public void init() {
-        //toggle actions:
-        //inputManager.addMapping("Toggle laser",  new KeyTrigger(KeyInput.KEY_L));
-        //inputManager.addMapping("Shoot", new KeyTrigger(KeyInput.KEY_SPACE));
-        //inputManager.addMapping("Restart", new KeyTrigger(KeyInput.KEY_R));
-        
-        //Analog actions
         inputManager.addMapping("Forward", new KeyTrigger(KeyInput.KEY_W));
         inputManager.addMapping("Backward", new KeyTrigger(KeyInput.KEY_S));
         inputManager.addMapping("Turn left",  new KeyTrigger(KeyInput.KEY_A));
@@ -35,10 +29,15 @@ public class KeyBindings {
         inputManager.addMapping("Turret up", new KeyTrigger(KeyInput.KEY_UP));
         inputManager.addMapping("Turret down", new KeyTrigger(KeyInput.KEY_DOWN));
         inputManager.addMapping("Fire", new KeyTrigger(KeyInput.KEY_SPACE));
+		inputManager.addMapping("SetZoom0", new KeyTrigger(KeyInput.KEY_1));
+		inputManager.addMapping("SetZoom1", new KeyTrigger(KeyInput.KEY_2));
+		inputManager.addMapping("SetZoom2", new KeyTrigger(KeyInput.KEY_3));
+		inputManager.addMapping("SetZoom3", new KeyTrigger(KeyInput.KEY_4));
+		inputManager.addMapping("SetZoom4", new KeyTrigger(KeyInput.KEY_5));
 
-        // Add the names to the action listener.
-        //inputManager.addListener(actionListener, "Toggle laser", "Shoot","Restart");
-        inputManager.addListener(actionListener,"Forward", "Backward", "Fire");
+        // Add the names to the action listener
+        inputManager.addListener(actionListener,"Forward", "Backward", "Fire", 
+				"SetZoom0", "SetZoom1", "SetZoom2", "SetZoom3", "SetZoom4");
         inputManager.addListener(analogListener,"Forward", "Backward", 
                 "Turn left", "Turn right", "Turret left", "Turret right", 
                 "Turret up", "Turret down");

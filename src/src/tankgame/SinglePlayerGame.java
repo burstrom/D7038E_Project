@@ -16,6 +16,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.CameraControl;
 import tankgame.client.KeyBindings;
+import tankgame.client.MyCameraNode;
 import tankgame.geoms.CannonBallNode;
 import tankgame.geoms.PlayFieldNode;
 import tankgame.geoms.TankNode;
@@ -31,7 +32,7 @@ public class SinglePlayerGame extends SimpleApplication implements IActionHandle
 	private TankNode tank;
 	private PlayFieldNode playField;
 	private Node allBulletsNode;
-	private CameraNode camNode;
+	private MyCameraNode camNode;
 
 	@Override
 	public void simpleInitApp() {
@@ -115,15 +116,7 @@ public class SinglePlayerGame extends SimpleApplication implements IActionHandle
 	private void initCamera(Node target) {
 		flyCam.setEnabled(false);
 		//create the camera Node
-		camNode = new CameraNode("Camera Node", cam);
-		//This mode means that camera copies the movements of the target:
-		camNode.setControlDir(CameraControl.ControlDirection.SpatialToCamera);
-		//Attach the camNode to the target:
-		target.attachChild(camNode);
-		//Move camNode, e.g. behind and above the target:
-		camNode.setLocalTranslation(new Vector3f(0, 10, -40));
-		//Rotate the camNode to look at the target:
-		camNode.lookAt(target.getLocalTranslation(), Vector3f.UNIT_Y);
+		camNode = new MyCameraNode("Camera Node", cam, target);
 	}
 
 	/**
@@ -141,5 +134,9 @@ public class SinglePlayerGame extends SimpleApplication implements IActionHandle
 			bullet.initClient(assetManager);
 			allBulletsNode.attachChild(bullet);
 		}
+	}
+
+	public void setZoom(int zoomLevel) {
+		this.camNode.setZoom(zoomLevel);
 	}
 }
