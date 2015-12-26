@@ -1,6 +1,6 @@
 package tankgame;
 
-import tankgame.util.NetworkHelper;
+import tankgame.util.network.NetworkHelper;
 import com.jme3.app.SimpleApplication;
 import com.jme3.network.Client;
 import com.jme3.network.Message;
@@ -10,7 +10,7 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import tankgame.util.NetworkHelper.NetworkMessage;
+import tankgame.util.network.NetworkHelper.NetworkMessage;
 
 /**
  * Example of networking with SpiderMonkey and threads in jMonkeyEngeine (Java).
