@@ -11,7 +11,7 @@ import com.jme3.scene.Spatial;
  * Utilities for movment
  * @author MrIngelborn
  */
-public class Movement {
+public class MovementHelper {
 	
 	/**
 	 * Moves a spatial in the spatials Z-direction

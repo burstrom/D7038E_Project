@@ -8,7 +8,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Node;
 import static demo.StandaloneTest.PLAYINGFIELD_SIDE;
-import tankgame.util.CommonGeoms;
+import tankgame.util.GeomsHelper;
 
 /**
  * Node for containing the ground and props in the world that creates the
@@ -25,17 +25,17 @@ public class PlayFieldNode extends GeomNode {
 	@Override
 	protected void createGeom(AssetManager assetManager) {
 		// Create the ground
-		Node field = CommonGeoms.createBox(assetManager, "Playing field", 
+		Node field = GeomsHelper.createBox(assetManager, "Playing field", 
                 PLAYINGFIELD_SIDE, 1f, PLAYINGFIELD_SIDE, ColorRGBA.Gray);
 		
 		// Create a few pillars
-        Node obstacle1 = CommonGeoms.createBox(assetManager, "Obstacle 1",
+        Node obstacle1 = GeomsHelper.createBox(assetManager, "Obstacle 1",
 				5f, 15f, 5f, ColorRGBA.LightGray);
-        Node obstacle2 = CommonGeoms.createBox(assetManager, "Obstacle 2",
+        Node obstacle2 = GeomsHelper.createBox(assetManager, "Obstacle 2",
 				5f, 15f, 5f, ColorRGBA.LightGray);
-        Node obstacle3 = CommonGeoms.createBox(assetManager, "Obstacle 3",
+        Node obstacle3 = GeomsHelper.createBox(assetManager, "Obstacle 3",
 				5f, 15f, 5f, ColorRGBA.LightGray);
-        Node obstacle4 = CommonGeoms.createBox(assetManager, "Obstacle 4",
+        Node obstacle4 = GeomsHelper.createBox(assetManager, "Obstacle 4",
 				5f, 15f, 5f, ColorRGBA.LightGray);
         
 		// Attach the nodes

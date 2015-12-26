@@ -14,7 +14,7 @@ import com.jme3.scene.shape.Sphere;
 import tankgame.settings.Constants;
 import static tankgame.settings.Constants.BULLET_RADIUS;
 import static tankgame.settings.Constants.BULLET_RES;
-import tankgame.util.Movement;
+import tankgame.util.MovementHelper;
 
 /**
  *
@@ -57,7 +57,7 @@ public class CannonBallNode extends GeomNode {
 	@Override
 	public void onUpdate(float tpf) {
 		//Move the bullet in it's rotation direction
-		Movement.moveForwardZ(this, Constants.BULLET_SPEED, tpf);
+		MovementHelper.moveForwardZ(this, Constants.BULLET_SPEED, tpf);
 
 		//Apply gravity physics
 		gravityVelocity += Constants.GRAVITY * tpf;

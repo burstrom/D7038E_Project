@@ -9,7 +9,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import tankgame.client.IInputHandler;
 import tankgame.settings.Constants;
-import tankgame.util.Movement;
+import tankgame.util.MovementHelper;
 
 /**
  * Node for the tanks in game
@@ -117,7 +117,7 @@ public class TankNode extends GeomNode {
 		}
 		// Move the tank according to its speed
 		if (speed != 0) {
-			Movement.moveForwardZ(this, speed, tpf);
+			MovementHelper.moveForwardZ(this, speed, tpf);
 		}
 
 		// Try to shoot a cannon ball if should be shooting

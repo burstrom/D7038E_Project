@@ -18,7 +18,7 @@ import com.jme3.scene.shape.Box;
  * 
  * @author MrIngelborn
  */
-public class CommonGeoms {
+public class GeomsHelper {
 	public static Node createBox(AssetManager assetManager, String name,
 			float length, float height, float width, ColorRGBA color) {
         Node boxNode = new Node(name);
