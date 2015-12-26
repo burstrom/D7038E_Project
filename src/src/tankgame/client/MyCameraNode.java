@@ -10,7 +10,6 @@ import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.CameraControl;
 import tankgame.settings.CameraSettings;
-import static tankgame.settings.CameraSettings.DEAFULT_ZOOM_LEVEL;
 
 /**
  *
@@ -18,6 +17,7 @@ import static tankgame.settings.CameraSettings.DEAFULT_ZOOM_LEVEL;
  */
 public class MyCameraNode extends CameraNode {
 	private int zoomLevel = CameraSettings.DEAFULT_ZOOM_LEVEL;
+	private Node target;
 	
 	/**
 	 * 
@@ -27,14 +27,11 @@ public class MyCameraNode extends CameraNode {
 	 */
 	public MyCameraNode(String name, Camera camera, Node target) {
 		super(name, camera);
-		
-		// This mode means that camera copies the movements of the target:
+		this.target = target;
+		// Set the camera to follow the target's movement
 		setControlDir(CameraControl.ControlDirection.SpatialToCamera);
-		// Attach the camera node to the target:
-		target.attachChild(this);
+		// Update the camera's position
 		updatePosition();
-		// Rotate the camNode to look at the target:
-		lookAt(target.getLocalTranslation(), Vector3f.UNIT_Y);
 	}
 	
 	public void setZoom(int zoomLevel) {
@@ -44,13 +41,13 @@ public class MyCameraNode extends CameraNode {
 				updatePosition();
 			}
 		}
-		//System.out.println("old zoom level: " + this.zoomLevel);
-		//System.out.println("new zoom level: " + zoomLevel);
 	}
 	
 	private void updatePosition() {
 		this.setLocalTranslation(0, CameraSettings.zoomLevelHeights[zoomLevel],
 				- (CameraSettings.zoomLevelHeights[zoomLevel] * CameraSettings.HeightToBackRatio));
+		// Rotate the camNode to look at the target:
+		lookAt(target.getLocalTranslation(), Vector3f.UNIT_Y);
 	}
 	
 }

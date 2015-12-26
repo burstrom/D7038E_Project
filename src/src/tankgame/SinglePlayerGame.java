@@ -117,6 +117,7 @@ public class SinglePlayerGame extends SimpleApplication implements IActionHandle
 		flyCam.setEnabled(false);
 		//create the camera Node
 		camNode = new MyCameraNode("Camera Node", cam, target);
+		target.attachChild(camNode);
 	}
 
 	/**
