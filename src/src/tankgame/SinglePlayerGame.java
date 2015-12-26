@@ -95,7 +95,6 @@ public class SinglePlayerGame extends SimpleApplication implements IInputHandler
 		
 		// Get tank's velocity
 		Vector3f tankVelocity = tank.getLocalRotation().getRotationColumn(2).mult(tank.getSpeed());
-		System.out.println(tankVelocity);
 		
 		// Create a new bullet
 		BulletNode bullet = new BulletNode("Bullet", tank.getColor(), tankVelocity);
