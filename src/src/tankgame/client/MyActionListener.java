@@ -1,11 +1,6 @@
 package tankgame.client;
 
 import com.jme3.input.controls.ActionListener;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
-import tankgame.geoms.CannonBallNode;
 
 /**
  *
@@ -35,8 +30,8 @@ public class MyActionListener implements ActionListener {
 				}
 			}
 		}
-		else if (name.equals("Fire") && isPressed) {
-			handler.shootBullet();
+		else if (name.equals("Fire")) {
+			handler.setShooting(isPressed);
 		}
 	}
 }

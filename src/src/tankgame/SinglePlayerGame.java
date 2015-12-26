@@ -9,7 +9,6 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.CameraNode;
@@ -42,7 +41,7 @@ public class SinglePlayerGame extends SimpleApplication implements IInputHandler
 		rootNode.attachChild(playField);
 
 		// Create the players tank
-		tank = new TankNode("Tank", ColorRGBA.Blue);
+		tank = new TankNode("Tank", ColorRGBA.Blue, this);
 		tank.initClient(assetManager);
 		rootNode.attachChild(tank);
 
@@ -87,14 +86,6 @@ public class SinglePlayerGame extends SimpleApplication implements IInputHandler
 		game.start();
 	}
 
-	public void shootBullet() {
-		CannonBallNode bullet = tank.shootBullet(this.getTimer().getTimeInSeconds());
-		if (bullet != null) {
-			bullet.initClient(assetManager);
-			allBulletsNode.attachChild(bullet);
-		}
-	}
-
 	/**
 	 * Applys acceleration to the tank in the specified direction
 	 *
@@ -133,5 +124,22 @@ public class SinglePlayerGame extends SimpleApplication implements IInputHandler
 		camNode.setLocalTranslation(new Vector3f(0, 10, -40));
 		//Rotate the camNode to look at the target:
 		camNode.lookAt(target.getLocalTranslation(), Vector3f.UNIT_Y);
+	}
+
+	/**
+	 * Set the local tank to be shooting ot not
+	 * 
+	 * @param pressed True if the tank should be shooting
+	 */
+	public void setShooting(boolean shooting) {
+		tank.setShooting(shooting);
+	}
+	
+	public void shootCannonBall() {
+		CannonBallNode bullet = tank.shootCannonBall(this.getTimer().getTimeInSeconds());
+		if (bullet != null) {
+			bullet.initClient(assetManager);
+			allBulletsNode.attachChild(bullet);
+		}
 	}
 }

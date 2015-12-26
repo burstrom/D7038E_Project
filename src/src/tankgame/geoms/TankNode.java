@@ -7,6 +7,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import tankgame.client.IInputHandler;
 import tankgame.settings.Constants;
 import tankgame.util.Movement;
 
@@ -16,22 +17,24 @@ import tankgame.util.Movement;
  * @author MrIngelborn
  */
 public class TankNode extends GeomNode {
-
+	private IInputHandler inputHandler;
 	private ColorRGBA color;
 	private float rotation = 0, elevation = 0, speed = 0;
 	private Node bodyNode, cannonNode, cannonLinkNode, cannonBarrelNode, engineNode, apertureNode;
 	private boolean accelerating = false;
 	private float lastBulletTime = 0;
 	private float bodySinX = 0;
+	private boolean isShooting = false;
 
 	/**
 	 * @param name Name of the Node
 	 * @param color THe color of the tank
 	 */
-	public TankNode(String name, ColorRGBA color) {
+	public TankNode(String name, ColorRGBA color, IInputHandler inputHandler) {
 		super(name);
 		this.color = color;
 		this.setLocalTranslation(0, 2, 0);
+		this.inputHandler = inputHandler;
 	}
 
 	/**
@@ -113,7 +116,9 @@ public class TankNode extends GeomNode {
 		if (speed != 0) {
 			Movement.moveForwardZ(this, speed, tpf);
 		}
-		//System.out.println("Speed: " + speed);
+		
+		// Try to shoot a cannon ball if should be shooting
+		if (isShooting) inputHandler.shootCannonBall();	
 	}
 
 	/**
@@ -215,11 +220,11 @@ public class TankNode extends GeomNode {
 
 	/**
 	 * Creates a new bullet at the aperture of the tank's cannon.
-	 *
+	 * Should only be called by an IInputHandler
 	 * @param currentTimeInSeconds The current time of the timer
 	 * @return The newly created bullet, or null if no bullet was created
 	 */
-	public CannonBallNode shootBullet(float currentTimeInSeconds) {
+	public CannonBallNode shootCannonBall(float currentTimeInSeconds) {
 		//Check if tank can shoot again
 		if (currentTimeInSeconds >= lastBulletTime + Constants.TANK_SHOOT_FREQ) {
 			// Get this tank's velocity
@@ -236,5 +241,16 @@ public class TankNode extends GeomNode {
 			return bullet;
 		}
 		return null;
+	}
+	
+	/**
+	 * Set the tank to be shooting or not. 
+	 * @param shooting True if the tank should be shooting
+	 */
+	public void setShooting(boolean shooting) {
+		if (!this.isShooting && shooting) {
+			inputHandler.shootCannonBall();
+		}
+		this.isShooting = shooting;
 	}
 }

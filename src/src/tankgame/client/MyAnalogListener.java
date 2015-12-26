@@ -5,7 +5,6 @@
 package tankgame.client;
 
 import com.jme3.input.controls.AnalogListener;
-import com.jme3.math.Vector3f;
 import static tankgame.settings.Constants.TANK_ACCELERATION;
 import static tankgame.settings.Constants.TANK_ROTATE_SPEED;
 import static tankgame.settings.Constants.CANNON_ELEVATE_SPEED;

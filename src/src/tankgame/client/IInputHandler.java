@@ -10,8 +10,6 @@ package tankgame.client;
  */
 public interface IInputHandler {
 
-	public void shootBullet();
-
 	public void accelerateTank(float acceleraton);
 
 	public void rotateTankY(float radians);
@@ -21,5 +19,9 @@ public interface IInputHandler {
 	public void elevateCannon(float radians);
 
 	public void setTankAccelerating(boolean shouldAccelerate);
+
+	public void setShooting(boolean shooting);
+	
+	public void shootCannonBall();
 	
 }
