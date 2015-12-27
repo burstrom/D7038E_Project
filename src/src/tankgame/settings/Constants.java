@@ -31,7 +31,7 @@ public class Constants {
     public static final float TANK_ACCELERATION = 5f;
     public static final float TANK_DECELERATION = 25f;
     public static final float TANK_MAX_SPEED = 30f;
-    public static final float TANK_MASS_OFFSET = -TANK_BODY_HEIGHT;
+    public static final float TANK_MASS_OFFSET = TANK_BODY_HEIGHT;
     //Following are in degrees per sec.
     public static final float TANK_ROTATE_SPEED = 0.7f; // In rads
     public static final float CANNON_ROTATE_SPEED = 20f; // In rads
@@ -44,5 +44,24 @@ public class Constants {
     public static final float BULLET_RADIUS = 0.2f;
     public static final float BULLET_SPEED = 30f;
     public static final float BULLET_MASS = 5f; //5 kg.
-    public static final float BULLET_FORCE = 10000f; //Energy?
+    public static final float BULLET_FORCE = 100f; //Energy?
+    
+    //Names of things.
+    public static final String TANK_NODE_NAME = "Tank node";
+    public static final String TANK_BODY_GEOM_NAME = "Tank body";
+    public static final String TANK_TURRET_ROT_NODE_NAME = "Turret rotation node";
+    public static final String TANK_TURRET_ELE_NODE_NAME = "Turret elevation node";
+    public static final String TANK_TURRET_MUZZLE_NODE_NAME = "Turret muzzle node";
+    public static final String TANK_TURRET_GEOM_NAME = "Tank turret";
+    public static final String TANK_BARREL_GEOM_NAME = "Tank barrel";
+    
+    public static final String BULLET_GEOM_NAME = "Bullet geometry";
+    public static final String BULLET_NODE_NAME = "Bullet node";
+    
+    public static final String ARENA_FLOOR_GEOM_NAME = "Playing field geometry";
+    public static final String ARENA_FLOOR_NODE_NAME = "Playing field";
+    
+    public static final String ARENA_OBSTACLE_GEOM_NAME = "Obstacle geometry";
+    public static final String ARENA_OBSTACLE_NODE_NAME = "Obstacle";
+    
 }
