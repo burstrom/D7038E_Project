@@ -20,6 +20,8 @@ import static tankgame.settings.Constants.*;
 public class BulletControl extends RigidBodyControl 
     implements PhysicsCollisionListener {
 
+    //Colliding with something generates a PhysicsCollisonEvent
+    //You never which node is A or B. Must check both
     public void collision(PhysicsCollisionEvent event) {
         System.out.println("Collision!");
         if (event.getNodeA() != null){
@@ -37,6 +39,7 @@ public class BulletControl extends RigidBodyControl
             }
         }
     }
+    
     private void collide(Node bullet){
         Vector3f hitLocation = bullet.getWorldTranslation();
         bullet.removeFromParent();
@@ -45,7 +48,7 @@ public class BulletControl extends RigidBodyControl
         System.out.println("Hit!");
         //TODO: Figure out how best to send info of this collision to the parent.
     }
-    
+    //Constructors
     public BulletControl(float mass, BulletAppState bulletAppState){
         super(mass);
         bulletAppState.getPhysicsSpace().addCollisionListener(this);

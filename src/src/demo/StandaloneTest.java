@@ -40,27 +40,29 @@ import static tankgame.settings.Constants.*;
 
 public class StandaloneTest extends SimpleApplication {
     //available variables.
-    private CameraNode camNode;
+    private CameraNode camNode; //following camera
     private Node arena = new Node("Arena");
     private Node tank = new Node("Tank");
     private Node allBullets = new Node("All bullets");
 
     private float speed = 0;
     
-    private float steeringValue = 0;
-    private float steeringForce = 0.3f;
-    private float accelerationValue = 0;
-    private float accelerationForce = 35000; //?
-    private float reverseForce = 30000;
-    private float brakeForce = 70000;
-    private float friction = 10000;
-    private float turretAngle = 0;
-    private int isMoving = 0;
+    private float steeringValue = 0; //Current steering
+    private float steeringForce = 0.3f; //how much to steer
+    private float accelerationValue = 0; // current acceleration
+    private float accelerationForce = 35000; //how much to accelerate each time unit
+    private float reverseForce = 30000; //Force to reverse
+    private float brakeForce = 70000; //Force for braking.
+    private float friction = 10000; //slowing force. Not implemented.
+    private float turretAngle = 0; //Turret rotation (unused?)
+    private int isMoving = 0; //if tank is under power.
     
-    private BulletAppState bulletAppState;
-    private VehicleControl vehicle;
+    private BulletAppState bulletAppState; //Contains physics state
+    private VehicleControl vehicle; //Vechicle physics
     
     public VehicleControl attachTankPhysics(Node tankNode) {
+        //All shapes are positioned at TANK_MASS_OFFSET to get a lower
+        //centre of gravity.
         CompoundCollisionShape compoundShape = new CompoundCollisionShape();
         BoxCollisionShape box = new BoxCollisionShape(
                 new Vector3f(TANK_BODY_WIDTH, TANK_BODY_HEIGHT, TANK_BODY_LENGTH));
@@ -74,6 +76,7 @@ public class StandaloneTest extends SimpleApplication {
         tankNode.addControl(vehicle);
         
         //BEGIN COPYPASTA CODE
+        //These lines define the car-like suspension. They're strictly approximate
         float stiffness = 120f;
         float compValue = .3f;
         float dampValue = .4f;
@@ -88,6 +91,8 @@ public class StandaloneTest extends SimpleApplication {
         float yOff = -TANK_BODY_HEIGHT+TANK_MASS_OFFSET;
         float xOff = TANK_BODY_WIDTH*0.9f;
         float zOff = TANK_BODY_LENGTH*0.9f;
+        
+        //Time to add wheels. These are also temporary
         Cylinder wheelMesh = new Cylinder(16, 16, radius, radius * 0.6f, true);
         
         Material mat = new Material(assetManager, 
@@ -136,17 +141,16 @@ public class StandaloneTest extends SimpleApplication {
         tankNode.attachChild(node4);
         //END COPYPASTA CODE
         
+        //Gravity 
         vehicle.setGravity(new Vector3f(0f,-9.81f,0f));
+        //This sets physics resolution.
         vehicle.setCcdMotionThreshold(TANK_BODY_HEIGHT);
         
         return vehicle;
     }
     
     public Node createTank(ColorRGBA color){
-        //Tanks consist of two nodes.
-        //The tanknode and the turretnode.
-        //since the turret is actually a sphere lodged inside the tank
-        //The whole shebang will be controllable.
+        //Tanks consist of four nodes, body, rotation, elevation and muzzle
         
         //Create body of tank.
         Node tankNode = new Node(TANK_NODE_NAME);
@@ -161,7 +165,8 @@ public class StandaloneTest extends SimpleApplication {
         
         tankNode.attachChild(body);
         
-        //Create turret nodes.
+        //Create turret nodes. Rotational handles turret rotation, elevation
+        //handles tilting up and down, aperture(muzzle) makes placing bullets easier
         Node turretRotationalNode = new Node(TANK_TURRET_ROT_NODE_NAME);
         Node turretElevationNode = new Node(TANK_TURRET_ELE_NODE_NAME);
         Node turretAperture = new Node(TANK_TURRET_MUZZLE_NODE_NAME);
@@ -189,7 +194,7 @@ public class StandaloneTest extends SimpleApplication {
         turretAperture.setLocalTranslation(
                 0, 0, 2f*TANK_BARREL_LENGTH-BULLET_RADIUS-TANK_BARREL_RADIUS);
         
-        //Make turret barrel cylinder
+        //Make turret barrel cylinder.
         Cylinder barrelCyl = new Cylinder(ROUND_THINGS_RES,
                 ROUND_THINGS_RES,TANK_BARREL_RADIUS,TANK_BARREL_LENGTH,
                 true);
@@ -207,6 +212,7 @@ public class StandaloneTest extends SimpleApplication {
     }
     
     //For testing purposes.
+    //Shorthand function for generic box.
     public Node createBox
             (String name, float length, float height, float width, ColorRGBA color) {
         Node boxNode = new Node(name);
@@ -220,6 +226,7 @@ public class StandaloneTest extends SimpleApplication {
         return boxNode;
     }
     
+    //Creates a bullet node.
     public Node createBullet(ColorRGBA color){
         Sphere bulletSphere = new Sphere(ROUND_THINGS_RES, 
                 ROUND_THINGS_RES, BULLET_RADIUS);
@@ -246,21 +253,17 @@ public class StandaloneTest extends SimpleApplication {
         return bulletNode;
     }
     
+    //Attach physics to the bullet
     private RigidBodyControl attachBulletPhysics(Node bulletNode) {
+        //Create collision shape
         SphereCollisionShape sphereColl = new SphereCollisionShape(BULLET_RADIUS);
-        //RigidBodyControl control = new RigidBodyControl(sphereColl, BULLET_MASS);
+        //Create the physics control.
         BulletControl control = new BulletControl(sphereColl, BULLET_MASS, bulletAppState);
+        //Stick to bullet node
         bulletNode.addControl(control);
+        //Set gravity and physics threshold.
         control.setGravity(new Vector3f(0f,9.81f,0f));
         control.setCcdMotionThreshold(BULLET_RADIUS);
-        /*
-        ((Geometry) bulletNode.getChild(BULLET_GEOM_NAME)).addControl(
-                new BulletControl(BULLET_MASS, bulletAppState));
-        RigidBodyControl control = ((Geometry) bulletNode.getChild(BULLET_GEOM_NAME)).
-                getControl(RigidBodyControl.class);
-        control.setGravity(new Vector3f(0f,9.81f,0f));
-        control.setCcdMotionThreshold(BULLET_RADIUS);
-        */
         return control;
     }
     
@@ -281,13 +284,6 @@ public class StandaloneTest extends SimpleApplication {
     
     
     private void initKeys() {
-        
-        //toggle actions:
-        //inputManager.addMapping("Toggle laser",  new KeyTrigger(KeyInput.KEY_L));
-        //inputManager.addMapping("Shoot", new KeyTrigger(KeyInput.KEY_SPACE));
-        //inputManager.addMapping("Restart", new KeyTrigger(KeyInput.KEY_R));
-        
-        //Analog actions
         inputManager.addMapping("Forward", new KeyTrigger(KeyInput.KEY_W));
         inputManager.addMapping("Backward", new KeyTrigger(KeyInput.KEY_S));
         inputManager.addMapping("Turn left",  new KeyTrigger(KeyInput.KEY_A));
@@ -299,7 +295,6 @@ public class StandaloneTest extends SimpleApplication {
         inputManager.addMapping("Fire", new KeyTrigger(KeyInput.KEY_SPACE));
 
         // Add the names to the action listener.
-        //inputManager.addListener(actionListener, "Toggle laser", "Shoot","Restart");
         inputManager.addListener(actionListener,"Forward", "Backward", 
                 "Turn left", "Turn right", "Turret left", "Turret right", 
                 "Turret up", "Turret down", "Fire");
@@ -323,7 +318,7 @@ public class StandaloneTest extends SimpleApplication {
     }
     
     private void initPlayingField() {
-        
+        //Set up the nodes.
         Node field = createBox(ARENA_FLOOR_NODE_NAME, 
                 PLAYINGFIELD_SIDE, 1f, PLAYINGFIELD_SIDE, ColorRGBA.Gray);
         Node obstacle1 = createBox(
@@ -334,25 +329,29 @@ public class StandaloneTest extends SimpleApplication {
                 ARENA_OBSTACLE_NODE_NAME, 5f,15f,5f, ColorRGBA.LightGray);
         Node obstacle4 = createBox(
                 ARENA_OBSTACLE_NODE_NAME, 5f,15f,5f, ColorRGBA.LightGray);
-        
-        
-        
+        //attach nodes
         arena.attachChild(field);
         arena.attachChild(obstacle1);
         arena.attachChild(obstacle2);
         arena.attachChild(obstacle3);
         arena.attachChild(obstacle4);
+        //place nodes.
         field.setLocalTranslation(0, -0.5f, 0);
         obstacle1.setLocalTranslation(100f, 15f, 0f);
         obstacle2.setLocalTranslation(-100f, 15f, 0f);
         obstacle3.setLocalTranslation(0f, 15f, 100f);
         obstacle4.setLocalTranslation(0f, 15f, -100f);
         
+        //Create collision for the arena.
+        //Generate collision from mesh
         CompoundCollisionShape arenaColl =
         (CompoundCollisionShape) CollisionShapeFactory.createMeshShape((Node) arena );
+        //Create control
         RigidBodyControl arenaPhys = 
             new RigidBodyControl( arenaColl , 0.0f );
+        //attach control
         bulletAppState.getPhysicsSpace().add(arenaPhys);
+        //Attach listener (?)
         //bulletAppState.getPhysicsSpace().addCollisionListener(arenaPhys);
     }
     
@@ -363,14 +362,16 @@ public class StandaloneTest extends SimpleApplication {
     
     @Override
     public void simpleInitApp() {
-
-       
+        //Start physics space.
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
-        bulletAppState.getPhysicsSpace().enableDebug(assetManager);
+        //Get debug printouts
+        bulletAppState.getPhysicsSpace().enableDebug(assetManager); 
         
+        //Set and move tank
         tank = createTank(ColorRGBA.Blue);
         tank.setLocalTranslation(0,PLAYINGFIELD_HEIGHT/2f+0.2f,0);
+        //Generates physics
         VehicleControl vehicle = attachTankPhysics(tank);
         bulletAppState.getPhysicsSpace().add(vehicle);
         
@@ -398,8 +399,9 @@ public class StandaloneTest extends SimpleApplication {
     }
   
     private ActionListener actionListener = new ActionListener() {
-        //TODO: Fix acceleration, braking, infinite rolling etc.
+        //TODO: Fix acceleration, braking, infinite rolling (?) etc.
         public void onAction(String name, boolean keyPressed, float tpf) {
+            //Accelerates when pressed. Kind of iffy at the moment.
             if (name.equals("Forward")) {
                 if (keyPressed){
                     System.out.println("Started moving forward.");
@@ -441,16 +443,22 @@ public class StandaloneTest extends SimpleApplication {
                 }
             }
             if (name.equals("Fire") && keyPressed){
+                //Create bullet node
                 Node bulletNode = createBullet(ColorRGBA.White);
+                //Bullet control.
                 RigidBodyControl bulletControl = attachBulletPhysics(bulletNode);
+                //Attach to world
                 allBullets.attachChild(bulletNode);
                 bulletAppState.getPhysicsSpace().add(bulletControl);
+                //Get direction for launching bullet 
                 Vector3f turretMuzzle = tank.getChild(
                         TANK_TURRET_MUZZLE_NODE_NAME).getWorldTranslation();
                 Vector3f turretBase = tank.getChild(TANK_TURRET_ROT_NODE_NAME)
                         .getWorldTranslation();
                 Vector3f launchDirection = turretMuzzle.subtract(turretBase);
+                //Set location for physics
                 bulletControl.setPhysicsLocation(turretMuzzle);
+                //apply force impulse
                 bulletControl.applyImpulse(
                         launchDirection.mult(BULLET_FORCE), turretMuzzle);
             }
