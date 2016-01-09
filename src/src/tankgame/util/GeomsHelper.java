@@ -24,9 +24,14 @@ public class GeomsHelper {
         Node boxNode = new Node(name);
         Box boxGeom = new Box(length,height,width);
         Geometry box = new Geometry(name+" geometry", boxGeom);
-        Material mat1 = new Material(assetManager, 
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        mat1.setColor("Color", color);
+        //Material mat1 = new Material(assetManager, 
+        //        "Common/MatDefs/Misc/Unshaded.j3md");
+        //mat1.setColor("Color", color);
+        Material mat1 = new Material(assetManager,
+                "Common/MatDefs/Light/Lighting.j3md");
+        mat1.setBoolean("UseMaterialColors",true);
+        mat1.setColor("Ambient", color); 
+        mat1.setColor("Diffuse", color); 
         box.setMaterial(mat1);
         boxNode.attachChild(box);
         return boxNode;

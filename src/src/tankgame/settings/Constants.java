@@ -26,7 +26,7 @@ public class Constants {
     public static final float CANNON_ELEVATE_SPEED = 0.4f; // rad/s
     public static final float CANNON_MAX_ELEVATION = 0.35f; // rads
     
-	public static final float TANK_SHOOT_FREQ = 1;
+    public static final float TANK_SHOOT_FREQ = 1;
 	
     //bullet constants
     public static final int BULLET_RES = 50;

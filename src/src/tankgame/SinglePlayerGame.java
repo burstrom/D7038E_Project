@@ -6,8 +6,10 @@ package tankgame;
 
 import tankgame.client.IActionHandler;
 import com.jme3.app.SimpleApplication;
+import com.jme3.bullet.BulletAppState;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
@@ -33,18 +35,30 @@ public class SinglePlayerGame extends SimpleApplication implements IActionHandle
 	private PlayFieldNode playField;
 	private Node allBulletsNode;
 	private MyCameraNode camNode;
-
+        private BulletAppState bulletAppState; //Contains physics state
 	@Override
 	public void simpleInitApp() {
+                //Start physics space.
+		bulletAppState = new BulletAppState();
+		stateManager.attach(bulletAppState);
+		//Get debug visuals
+		bulletAppState.getPhysicsSpace().enableDebug(assetManager);
+            
 		// Create the playing field
 		playField = new PlayFieldNode("PlayField");
 		playField.initClient(assetManager);
-		rootNode.attachChild(playField);
+                rootNode.attachChild(playField);
+                //Get physics of playing field and attach it to bullet state
+                bulletAppState.getPhysicsSpace().add(playField.createPhysics());
 
 		// Create the players tank
 		tank = new TankNode("Tank", ColorRGBA.Blue, this);
 		tank.initClient(assetManager);
 		rootNode.attachChild(tank);
+                //Attach vehiclecontrol
+                //tank.makeControl();
+                
+                bulletAppState.getPhysicsSpace().add(tank.createControl());
 
 		//Create node for all bullets
 		allBulletsNode = new Node("Bullets");

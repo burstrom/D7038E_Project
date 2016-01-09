@@ -4,6 +4,7 @@
  */
 package tankgame.util;
 
+import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 
@@ -25,11 +26,12 @@ public class MovementHelper {
     
 	/**
 	 * Moves a spatial in the spatials Z-direction
-	 * @param element The spatial to move
+	 * @param element The PhysicsControl to move
 	 * @param distance 
 	 */
     public static void moveForwardZ(Spatial element, float distance ) {
         Vector3f forward = element.getLocalRotation().mult(Vector3f.UNIT_Z);
         element.move(forward.mult(distance));
     }
+    
 }

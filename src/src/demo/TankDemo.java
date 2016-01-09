@@ -28,7 +28,7 @@ public class TankDemo extends SimpleApplication{
 		flyCam.setMoveSpeed(20);
 		
 		tankNode = createTank();
-        rootNode.attachChild(tankNode);
+                rootNode.attachChild(tankNode);
 		/*
 		FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
 		BloomFilter bf = new BloomFilter(BloomFilter.GlowMode.Objects);

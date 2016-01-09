@@ -5,6 +5,9 @@
 package tankgame.geoms;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
+import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Node;
 import static demo.StandaloneTest.PLAYINGFIELD_SIDE;
@@ -52,6 +55,20 @@ public class PlayFieldNode extends GeomNode {
         obstacle3.setLocalTranslation(0f, 15f, 100f);
         obstacle4.setLocalTranslation(0f, 15f, -100f);
 	}
+        
+        //Returns a phyiscs control of the arena.
+        public RigidBodyControl createPhysics(){
+            //Automatic, independent of shapes, as long as it is composed of
+            //simple shapes.
+            CompoundCollisionShape arenaColl =
+				(CompoundCollisionShape) 
+                    CollisionShapeFactory.createMeshShape(this);
+            //A mass of 0 makes it static.
+            RigidBodyControl arenaPhys =
+                            new RigidBodyControl(arenaColl, 0.0f);
+            this.addControl(arenaPhys);
+            return arenaPhys;
+        }
 
 	@Override
 	public void onUpdate(float tpf) {
