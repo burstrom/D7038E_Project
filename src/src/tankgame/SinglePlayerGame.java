@@ -147,6 +147,7 @@ public class SinglePlayerGame extends SimpleApplication implements IActionHandle
 		CannonBallNode bullet = tank.shootCannonBall(this.getTimer().getTimeInSeconds());
 		if (bullet != null) {
 			bullet.initClient(assetManager);
+                        bulletAppState.getPhysicsSpace().add(bullet.createPhysics());
 			allBulletsNode.attachChild(bullet);
 		}
 	}
